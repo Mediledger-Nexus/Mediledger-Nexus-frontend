@@ -29,7 +29,7 @@ export default function HomePage() {
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center">
         <BackgroundVideo
-          src="/hero-dna-helix.gif"
+          src="/hero-animation.mp4"
           alt="DNA helix and data streams animation"
           className="absolute inset-0 w-full h-full object-cover"
         />
