@@ -9,7 +9,7 @@ export function BackgroundVideo({ src, className = "" }: BackgroundVideoProps) {
   return (
     <div className={`absolute inset-0 ${className}`}>
       <img
-        src={src || "/placeholder.svg"}
+        src={src || "/public/hero-animation.mp4"}
         alt="Background"
         className="w-full h-full object-cover"
         style={{
