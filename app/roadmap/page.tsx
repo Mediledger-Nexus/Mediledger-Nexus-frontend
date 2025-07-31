@@ -64,7 +64,8 @@ export default function RoadmapPage() {
       {/* Roadmap Timeline Section */}
       <section className="relative min-h-screen flex items-center justify-center pt-20">
         <BackgroundVideo
-          src="/placeholder.svg?height=1080&width=1920"
+          src="/timeline-particle-flow.gif"
+          alt="Timeline particle flow animation"
           className="absolute inset-0 w-full h-full object-cover opacity-30"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/80 to-black/90" />
@@ -179,12 +180,23 @@ export default function RoadmapPage() {
             </div>
           </div>
         </motion.div>
+
+        {/* Flowing wave divider */}
+        <div className="absolute bottom-0 left-0 w-full overflow-hidden">
+          <svg className="relative block w-full h-32" viewBox="0 0 1200 120" preserveAspectRatio="none">
+            <path
+              d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z"
+              fill="rgb(15 23 42)"
+            ></path>
+          </svg>
+        </div>
       </section>
 
       {/* Metrics Section */}
       <section className="relative py-32 bg-slate-900">
         <BackgroundVideo
-          src="/placeholder.svg?height=1080&width=1920"
+          src="/graph-data-visualization.gif"
+          alt="Graph data visualization animation"
           className="absolute inset-0 w-full h-full object-cover opacity-20"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-slate-900/90 to-slate-900/95" />
@@ -225,12 +237,23 @@ export default function RoadmapPage() {
             ))}
           </div>
         </motion.div>
+
+        {/* Diamond pattern divider */}
+        <div className="absolute bottom-0 left-0 w-full overflow-hidden">
+          <svg className="relative block w-full h-24" viewBox="0 0 1200 120" preserveAspectRatio="none">
+            <path
+              d="M0,120L100,80L200,120L300,80L400,120L500,80L600,120L700,80L800,120L900,80L1000,120L1100,80L1200,120V120H0Z"
+              fill="rgb(0 0 0)"
+            ></path>
+          </svg>
+        </div>
       </section>
 
       {/* Stakeholder Benefits Section */}
-      <section className="relative py-32">
+      <section className="relative py-32 bg-black">
         <BackgroundVideo
-          src="/placeholder.svg?height=1080&width=1920"
+          src="/identity-nodes-map.gif"
+          alt="Identity nodes map animation"
           className="absolute inset-0 w-full h-full object-cover opacity-25"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/80 to-slate-900/90" />
@@ -329,12 +352,20 @@ export default function RoadmapPage() {
             </motion.div>
           </div>
         </motion.div>
+
+        {/* Organic blob divider */}
+        <div className="absolute bottom-0 left-0 w-full overflow-hidden">
+          <svg className="relative block w-full h-28" viewBox="0 0 1200 120" preserveAspectRatio="none">
+            <path d="M0,120C200,80 400,100 600,60C800,20 1000,80 1200,40V120Z" fill="rgb(139 69 19)"></path>
+          </svg>
+        </div>
       </section>
 
       {/* CTA Section */}
       <section className="relative py-32">
         <BackgroundVideo
-          src="/placeholder.svg?height=1080&width=1920"
+          src="/energetic-orbiting-spheres.gif"
+          alt="Energetic orbiting spheres animation"
           className="absolute inset-0 w-full h-full object-cover opacity-40"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-purple-900/80 via-black/90 to-pink-900/80" />
@@ -383,7 +414,8 @@ export default function RoadmapPage() {
       {/* Footer */}
       <footer className="relative py-16 bg-black border-t border-slate-800">
         <BackgroundVideo
-          src="/placeholder.svg?height=400&width=1920"
+          src="/carbon-fiber-dots.gif"
+          alt="Carbon fiber dots animation"
           className="absolute inset-0 w-full h-full object-cover opacity-10"
         />
         <div className="relative z-10 max-w-7xl mx-auto px-6">

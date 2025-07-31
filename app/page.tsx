@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
-import { ArrowRight, Shield, Zap, Users, Database, Brain } from "lucide-react"
+import { ArrowRight, Shield, Zap, Users, Database, Brain, Play } from "lucide-react"
 import Link from "next/link"
 import { Navigation } from "@/components/navigation"
 import { BackgroundVideo } from "@/components/background-video"
@@ -29,7 +29,8 @@ export default function HomePage() {
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center">
         <BackgroundVideo
-          src="/placeholder.svg?height=1080&width=1920"
+          src="/hero-dna-helix.gif"
+          alt="DNA helix and data streams animation"
           className="absolute inset-0 w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/60 to-black/80" />
@@ -59,25 +60,28 @@ export default function HomePage() {
           </motion.p>
 
           <motion.div className="flex flex-col sm:flex-row gap-6 justify-center items-center" variants={fadeInUp}>
-            <Button
-              size="lg"
-              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-8 py-4 text-lg font-semibold rounded-full shadow-2xl hover:shadow-purple-500/25 transition-all duration-300 transform hover:scale-105"
-            >
-              Get Started <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
+            <Link href="/signup">
+              <Button
+                size="lg"
+                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-8 py-4 text-lg font-semibold rounded-full shadow-2xl hover:shadow-purple-500/25 transition-all duration-300 transform hover:scale-105"
+              >
+                Get Started <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
             <Button
               variant="outline"
               size="lg"
               className="border-2 border-cyan-400 text-cyan-400 hover:bg-cyan-400 hover:text-black px-8 py-4 text-lg font-semibold rounded-full transition-all duration-300 bg-transparent"
             >
-              Download PRD
+              <Play className="mr-2 h-5 w-5" />
+              Watch Demo
             </Button>
           </motion.div>
         </motion.div>
 
-        {/* Custom shape divider */}
+        {/* Curved wave divider */}
         <div className="absolute bottom-0 left-0 w-full overflow-hidden">
-          <svg className="relative block w-full h-20" viewBox="0 0 1200 120" preserveAspectRatio="none">
+          <svg className="relative block w-full h-32" viewBox="0 0 1200 120" preserveAspectRatio="none">
             <path
               d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z"
               fill="rgb(15 23 42)"
@@ -89,7 +93,8 @@ export default function HomePage() {
       {/* Why It's Groundbreaking Section */}
       <section className="relative py-32 bg-slate-900">
         <BackgroundVideo
-          src="/placeholder.svg?height=1080&width=1920"
+          src="/encrypted-data-flow.gif"
+          alt="Encrypted data visualization animation"
           className="absolute inset-0 w-full h-full object-cover opacity-20"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-slate-900/90 to-slate-900/95" />
@@ -148,12 +153,20 @@ export default function HomePage() {
             ))}
           </div>
         </motion.div>
+
+        {/* Triangular divider */}
+        <div className="absolute bottom-0 left-0 w-full overflow-hidden">
+          <svg className="relative block w-full h-24" viewBox="0 0 1200 120" preserveAspectRatio="none">
+            <path d="M0,120L600,0L1200,120Z" fill="rgb(0 0 0)"></path>
+          </svg>
+        </div>
       </section>
 
       {/* Problem vs Solution Section */}
-      <section className="relative py-32">
+      <section className="relative py-32 bg-black">
         <BackgroundVideo
-          src="/placeholder.svg?height=1080&width=1920"
+          src="/hospital-digital-transformation.gif"
+          alt="Hospital digital transformation animation"
           className="absolute inset-0 w-full h-full object-cover opacity-30"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-red-900/80 via-black/90 to-green-900/80" />
@@ -212,10 +225,10 @@ export default function HomePage() {
           </div>
         </motion.div>
 
-        {/* Diagonal divider */}
+        {/* Curved diagonal divider */}
         <div className="absolute bottom-0 left-0 w-full overflow-hidden">
-          <svg className="relative block w-full h-20" viewBox="0 0 1200 120" preserveAspectRatio="none">
-            <path d="M1200,0H0V120L1200,0Z" fill="rgb(15 23 42)"></path>
+          <svg className="relative block w-full h-28" viewBox="0 0 1200 120" preserveAspectRatio="none">
+            <path d="M0,120C300,60 600,0 1200,40V120Z" fill="rgb(15 23 42)"></path>
           </svg>
         </div>
       </section>
@@ -223,7 +236,8 @@ export default function HomePage() {
       {/* How It Works Section */}
       <section className="relative py-32 bg-slate-900">
         <BackgroundVideo
-          src="/placeholder.svg?height=1080&width=1920"
+          src="/data-flow-systems.gif"
+          alt="Data flow through systems animation"
           className="absolute inset-0 w-full h-full object-cover opacity-25"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-slate-900/90 to-slate-900/95" />
@@ -279,12 +293,23 @@ export default function HomePage() {
             ))}
           </div>
         </motion.div>
+
+        {/* Wave divider */}
+        <div className="absolute bottom-0 left-0 w-full overflow-hidden">
+          <svg className="relative block w-full h-20" viewBox="0 0 1200 120" preserveAspectRatio="none">
+            <path
+              d="M985.66,92.83C906.67,72,823.78,31,743.84,14.19c-82.26-17.34-168.06-16.33-250.45.39-57.84,11.73-114,31.07-172,41.86A600.21,600.21,0,0,1,0,27.35V120H1200V95.8C1132.19,118.92,1055.71,111.31,985.66,92.83Z"
+              fill="rgb(0 0 0)"
+            ></path>
+          </svg>
+        </div>
       </section>
 
       {/* Testimonials Section */}
-      <section className="relative py-32">
+      <section className="relative py-32 bg-black">
         <BackgroundVideo
-          src="/placeholder.svg?height=1080&width=1920"
+          src="/network-nodes.gif"
+          alt="Network nodes animation"
           className="absolute inset-0 w-full h-full object-cover opacity-20"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/80 to-slate-900/90" />
@@ -335,10 +360,24 @@ export default function HomePage() {
             ))}
           </div>
         </motion.div>
+
+        {/* Hexagon divider */}
+        <div className="absolute bottom-0 left-0 w-full overflow-hidden">
+          <svg className="relative block w-full h-24" viewBox="0 0 1200 120" preserveAspectRatio="none">
+            <path d="M0,120L200,60L400,120L600,60L800,120L1000,60L1200,120V120H0Z" fill="rgb(139 69 19)"></path>
+          </svg>
+        </div>
       </section>
 
       {/* CTA Section */}
       <section className="relative py-32 bg-gradient-to-r from-purple-900 via-black to-cyan-900">
+        <BackgroundVideo
+          src="/orbiting-spheres.gif"
+          alt="Energetic orbiting spheres animation"
+          className="absolute inset-0 w-full h-full object-cover opacity-40"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-purple-900/80 via-black/90 to-cyan-900/80" />
+
         <motion.div
           className="relative z-10 max-w-4xl mx-auto text-center px-6"
           initial="initial"

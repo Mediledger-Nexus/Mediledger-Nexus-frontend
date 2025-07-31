@@ -29,7 +29,8 @@ export default function FeaturesPage() {
       {/* Tech Stack Section */}
       <section className="relative min-h-screen flex items-center justify-center pt-20">
         <BackgroundVideo
-          src="/placeholder.svg?height=1080&width=1920"
+          src="/futuristic-dashboard.gif"
+          alt="Futuristic dashboard animation"
           className="absolute inset-0 w-full h-full object-cover opacity-30"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/80 to-black/90" />
@@ -74,12 +75,20 @@ export default function FeaturesPage() {
             ))}
           </div>
         </motion.div>
+
+        {/* Organic wave divider */}
+        <div className="absolute bottom-0 left-0 w-full overflow-hidden">
+          <svg className="relative block w-full h-32" viewBox="0 0 1200 120" preserveAspectRatio="none">
+            <path d="M0,0V7.23C0,65.52,268.63,112.77,600,112.77S1200,65.52,1200,7.23V0Z" fill="rgb(15 23 42)"></path>
+          </svg>
+        </div>
       </section>
 
       {/* Feature Cards Section */}
-      <section className="relative py-32">
+      <section className="relative py-32 bg-slate-900">
         <BackgroundVideo
-          src="/placeholder.svg?height=1080&width=1920"
+          src="/hologram-medical-data.gif"
+          alt="Holographic medical data animation"
           className="absolute inset-0 w-full h-full object-cover opacity-25"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-slate-900/90 to-black/95" />
@@ -184,12 +193,20 @@ export default function FeaturesPage() {
             </motion.div>
           </div>
         </motion.div>
+
+        {/* Curved mountain divider */}
+        <div className="absolute bottom-0 left-0 w-full overflow-hidden">
+          <svg className="relative block w-full h-28" viewBox="0 0 1200 120" preserveAspectRatio="none">
+            <path d="M0,120L240,80L480,100L720,60L960,90L1200,40V120Z" fill="rgb(15 23 42)"></path>
+          </svg>
+        </div>
       </section>
 
       {/* Code Snippet Section */}
       <section className="relative py-32 bg-slate-900">
         <BackgroundVideo
-          src="/placeholder.svg?height=1080&width=1920"
+          src="/terminal-matrix-animation.gif"
+          alt="Terminal matrix animation"
           className="absolute inset-0 w-full h-full object-cover opacity-20"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-slate-900/95 to-black/90" />
@@ -255,12 +272,23 @@ console.log('Health insights:', insights)`}</code>
             </pre>
           </motion.div>
         </motion.div>
+
+        {/* Zigzag divider */}
+        <div className="absolute bottom-0 left-0 w-full overflow-hidden">
+          <svg className="relative block w-full h-20" viewBox="0 0 1200 120" preserveAspectRatio="none">
+            <path
+              d="M0,120L150,60L300,120L450,60L600,120L750,60L900,120L1050,60L1200,120V120H0Z"
+              fill="rgb(0 0 0)"
+            ></path>
+          </svg>
+        </div>
       </section>
 
       {/* Security & Compliance Section */}
-      <section className="relative py-32">
+      <section className="relative py-32 bg-black">
         <BackgroundVideo
-          src="/placeholder.svg?height=1080&width=1920"
+          src="/biometric-security-animation.gif"
+          alt="Biometric security animation"
           className="absolute inset-0 w-full h-full object-cover opacity-25"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/80 to-slate-900/90" />
@@ -333,10 +361,24 @@ console.log('Health insights:', insights)`}</code>
             </motion.div>
           </div>
         </motion.div>
+
+        {/* Circular arc divider */}
+        <div className="absolute bottom-0 left-0 w-full overflow-hidden">
+          <svg className="relative block w-full h-24" viewBox="0 0 1200 120" preserveAspectRatio="none">
+            <path d="M0,120C400,40 800,40 1200,120V120H0Z" fill="rgb(139 69 19)"></path>
+          </svg>
+        </div>
       </section>
 
       {/* CTA Section */}
       <section className="relative py-32 bg-gradient-to-r from-purple-900 via-black to-cyan-900">
+        <BackgroundVideo
+          src="/tech-particles.gif"
+          alt="Technology particles animation"
+          className="absolute inset-0 w-full h-full object-cover opacity-30"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-purple-900/80 via-black/90 to-cyan-900/80" />
+
         <motion.div
           className="relative z-10 max-w-4xl mx-auto text-center px-6"
           initial="initial"
