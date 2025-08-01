@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Menu, X } from "lucide-react"
 import Link from "next/link"
 import { useState } from "react"
+import Image from "next/image"
 
 export function Navigation() {
   const [isOpen, setIsOpen] = useState(false)
@@ -19,10 +20,16 @@ export function Navigation() {
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center space-x-3">
-            {/* Logo placeholder */}
-            <div className="w-10 h-10 bg-gradient-to-r from-purple-600 to-cyan-600 rounded-lg flex items-center justify-center relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-cyan-600 opacity-20"></div>
-              <span className="text-white font-bold text-lg relative z-10">ML</span>
+            {/* MediLedger Nexus Logo */}
+            <div className="w-10 h-10 relative">
+              <Image
+                src="/mediledger-logo.jpeg"
+                alt="MediLedger Nexus Logo"
+                width={40}
+                height={40}
+                className="rounded-lg object-contain"
+                priority
+              />
             </div>
             <span className="text-xl font-bold bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
               MediLedger Nexus

@@ -29,9 +29,10 @@ export default function HomePage() {
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center">
         <BackgroundVideo
-          src="/hero-animation.mp4"
-          alt="DNA helix and data streams animation"
+          src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/hero-animation-W7GdIl2gAgSUgYoXWR6xFDcwPA9WSB.mp4"
+          alt="Hero animation with medical data visualization"
           className="absolute inset-0 w-full h-full object-cover"
+          isVideo={true}
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/60 to-black/80" />
 
@@ -308,9 +309,10 @@ export default function HomePage() {
       {/* Testimonials Section */}
       <section className="relative py-32 bg-black">
         <BackgroundVideo
-          src="/network-nodes.gif"
-          alt="Network nodes animation"
+          src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/AQNUbx0mAJ7e4HqGLAx5PA4rmfSg58aHM2x1QHvrx-2J1eLmRA38K5yN4DjY82rIpoJQQOOikhM9-2YEt4QLmYl2RvmPsR-7FSm9I16RUZuQT2bHDl8621E0ZHj06iQt-njC5BjUIF9vwT3e0ypZ3XpFot8VjAX.mp4"
+          alt="Testimonials background animation"
           className="absolute inset-0 w-full h-full object-cover opacity-20"
+          isVideo={true}
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/80 to-slate-900/90" />
 

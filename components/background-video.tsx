@@ -4,13 +4,14 @@ interface BackgroundVideoProps {
   src: string
   alt: string
   className?: string
+  isVideo?: boolean
 }
 
-export function BackgroundVideo({ src, alt, className = "" }: BackgroundVideoProps) {
+export function BackgroundVideo({ src, alt, className = "", isVideo = false }: BackgroundVideoProps) {
   const handleDownload = () => {
     const link = document.createElement("a")
     link.href = src
-    link.download = alt.replace(/\s+/g, "-").toLowerCase() + ".gif"
+    link.download = alt.replace(/\s+/g, "-").toLowerCase() + (isVideo ? ".mp4" : ".gif")
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
@@ -18,15 +19,40 @@ export function BackgroundVideo({ src, alt, className = "" }: BackgroundVideoPro
 
   return (
     <div className={`absolute inset-0 group ${className}`}>
-      <img
-        src={src || "/placeholder.svg"}
-        alt={alt}
-        className="w-full h-full object-cover"
-        style={{
-          filter: "blur(1px) brightness(0.7)",
-          animation: "subtle-float 20s ease-in-out infinite",
-        }}
-      />
+      {isVideo ? (
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="w-full h-full object-cover"
+          style={{
+            filter: "blur(1px) brightness(0.7)",
+          }}
+        >
+          <source src={src} type="video/mp4" />
+          {/* Fallback for browsers that don't support video */}
+          <img
+            src="/placeholder.svg?height=1080&width=1920"
+            alt={alt}
+            className="w-full h-full object-cover"
+            style={{
+              filter: "blur(1px) brightness(0.7)",
+              animation: "subtle-float 20s ease-in-out infinite",
+            }}
+          />
+        </video>
+      ) : (
+        <img
+          src={src || "/placeholder.svg"}
+          alt={alt}
+          className="w-full h-full object-cover"
+          style={{
+            filter: "blur(1px) brightness(0.7)",
+            animation: "subtle-float 20s ease-in-out infinite",
+          }}
+        />
+      )}
 
       {/* Download button overlay */}
       <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
