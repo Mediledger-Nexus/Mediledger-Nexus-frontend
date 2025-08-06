@@ -2,17 +2,17 @@ import React from 'react'
 import { cn } from '@/lib/utils'
 
 interface HederaLogoProps {
-  className?: string
   size?: 'sm' | 'md' | 'lg' | 'xl'
   animated?: boolean
   pulseOnSuccess?: boolean
+  className?: string
 }
 
-export function HederaLogo({ 
-  className, 
-  size = 'md', 
+export function HederaLogo({
+  size = 'md',
   animated = false,
-  pulseOnSuccess = false 
+  pulseOnSuccess = false,
+  className = ''
 }: HederaLogoProps) {
   const sizeClasses = {
     sm: 'w-6 h-6',
@@ -20,6 +20,8 @@ export function HederaLogo({
     lg: 'w-12 h-12',
     xl: 'w-16 h-16'
   }
+
+  const baseClasses = `hedera-logo ${sizeClasses[size]} ${className}`
 
   return (
     <svg
@@ -37,10 +39,10 @@ export function HederaLogo({
     >
       {/* Official Hedera Hashgraph Logo - Purple Circle Background */}
       <circle cx="16" cy="16" r="15" fill="#6f42c1" stroke="#6f42c1" strokeWidth="2"/>
-      
+
       {/* White Inner Circle */}
       <circle cx="16" cy="16" r="12" fill="white"/>
-      
+
       {/* Hedera H Symbol */}
       <path
         d="M11 8h2v6h6V8h2v16h-2v-6h-6v6h-2V8z"

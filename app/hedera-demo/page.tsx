@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Navigation } from '@/components/navigation'
-import { DemoBanner } from '@/components/demo-banner'
+import DemoBanner from '@/components/demo-banner'
 import { TransactionHistory } from '@/components/transaction-history'
 import { SubmitToHedera } from '@/components/submit-to-hedera'
 import { HederaFooter } from '@/components/hedera-footer'
@@ -23,6 +23,7 @@ import {
   CheckCircle,
   ArrowRight
 } from 'lucide-react'
+import { REAL_HEDERA_EXAMPLE } from '@/lib/constants'
 
 export default function HederaDemoPage() {
   const [selectedTransactionType, setSelectedTransactionType] = useState<'PATIENT_UPDATE' | 'RECORD_ACCESS' | 'CONSENT_GRANT' | 'DATA_SHARE'>('PATIENT_UPDATE')
@@ -44,7 +45,7 @@ export default function HederaDemoPage() {
       <Navigation />
       
       {/* Demo Banner */}
-      <DemoBanner className="sticky top-0 z-50" />
+      <DemoBanner />
 
       {/* Hero Section */}
       <section className="relative py-20 bg-gradient-to-b from-purple-900/20 to-black">
@@ -305,6 +306,60 @@ export default function HederaDemoPage() {
               </CardContent>
             </Card>
           </div>
+        </div>
+      </section>
+
+      {/* Real Transaction Example Section */}
+      <section className="py-20 bg-black">
+        <div className="max-w-7xl mx-auto px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6 }}
+            className="text-center mb-12"
+          >
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
+              Real Hedera Testnet Example
+            </h2>
+            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+              See an actual transaction from the Hedera testnet
+            </p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.7 }}
+            className="real-tx-example"
+          >
+            <Card className="bg-white/5 backdrop-blur-sm border-purple-500/20 max-w-2xl mx-auto">
+              <CardContent className="p-8">
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-400">Transaction ID:</span>
+                    <a 
+                      href={REAL_HEDERA_EXAMPLE.hashscanLink} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-purple-400 hover:text-purple-300 underline break-all"
+                    >
+                      {REAL_HEDERA_EXAMPLE.txId}
+                    </a>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-400">Fee:</span>
+                    <span className="text-green-400">{REAL_HEDERA_EXAMPLE.fee}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-400">Timestamp:</span>
+                    <span className="text-gray-300">
+                      {new Date(REAL_HEDERA_EXAMPLE.consensus_timestamp).toLocaleString()}
+                    </span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
         </div>
       </section>
 

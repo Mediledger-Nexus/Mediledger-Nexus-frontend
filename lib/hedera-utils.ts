@@ -97,3 +97,12 @@ export function isDemoMode(): boolean {
 export function getDemoBannerText(): string {
   return 'Demo Mode - Mock Hedera Transactions'
 } 
+
+// Generate realistic mock transaction with exact format
+export const generateMockTx = () => ({
+  txId: `0.0.${Math.floor(1000 + Math.random() * 9000)}@${Date.now().toString().slice(0, 10)}.${Date.now().toString().slice(-9)}`,
+  hashscanLink: `https://hashscan.io/testnet/transaction/0.0.${Math.floor(1000 + Math.random() * 9000)}@${Date.now()}`,
+  fee: `$${(0.0001 + Math.random() * 0.0005).toFixed(4)} USD`,
+  consensus_timestamp: new Date().toISOString(),
+  status: Math.random() > 0.2 ? 'SUCCESS' : 'PENDING'
+}); 

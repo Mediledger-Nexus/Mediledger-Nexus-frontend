@@ -1,12 +1,14 @@
 "use client"
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { HederaLogo } from '@/components/ui/hedera-logo'
 import { createMockTransaction, simulateNetworkDelay } from '@/lib/hedera-utils'
 import { toast } from 'sonner'
 import { Send, CheckCircle, Loader2 } from 'lucide-react'
+import Spinner from '@/components/ui/spinner'
+import { useToast } from '@/components/ui/use-toast'
 
 interface SubmitToHederaProps {
   transactionType: 'PATIENT_UPDATE' | 'RECORD_ACCESS' | 'CONSENT_GRANT' | 'DATA_SHARE'
@@ -23,6 +25,13 @@ export function SubmitToHedera({
 }: SubmitToHederaProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
+  const { toast } = useToast()
+
+  useEffect(() => {
+    const logo = document.querySelector('.hedera-logo');
+    if (isSubmitting) logo?.classList.add('active');
+    else logo?.classList.remove('active');
+  }, [isSubmitting]);
 
   const handleSubmit = async () => {
     setIsSubmitting(true)
@@ -136,7 +145,7 @@ export function SubmitToHedera({
                 <HederaLogo size="sm" />
               </motion.div>
               <Send className="w-5 h-5" />
-              <span>Submit to Hedera</span>
+              <span>Simulate Transaction</span>
             </>
           )}
         </div>
