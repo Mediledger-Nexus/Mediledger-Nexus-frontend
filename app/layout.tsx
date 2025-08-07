@@ -9,6 +9,10 @@ export const metadata: Metadata = {
   title: "MediLedger Nexus - Decentralized Healthcare Records",
   description: "Your Records. Your Control. The future of healthcare data management with blockchain technology.",
   generator: "MediLedger Nexus",
+  icons: {
+    icon: '/mediledger-logo.jpeg',
+    apple: '/mediledger-logo.jpeg',
+  },
 }
 
 export default function RootLayout({
@@ -19,6 +23,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        <link rel="icon" href="/mediledger-logo.jpeg" type="image/jpeg" />
         <style>{`
 html {
   font-family: ${GeistSans.style.fontFamily};

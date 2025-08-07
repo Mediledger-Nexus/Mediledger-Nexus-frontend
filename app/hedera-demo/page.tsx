@@ -24,6 +24,7 @@ import {
   ArrowRight
 } from 'lucide-react'
 import { REAL_HEDERA_EXAMPLE } from '@/lib/constants'
+import Image from 'next/image'
 
 export default function HederaDemoPage() {
   const [selectedTransactionType, setSelectedTransactionType] = useState<'PATIENT_UPDATE' | 'RECORD_ACCESS' | 'CONSENT_GRANT' | 'DATA_SHARE'>('PATIENT_UPDATE')
@@ -55,8 +56,20 @@ export default function HederaDemoPage() {
             animate={{ opacity: 1, y: 0 }}
             className="text-center mb-16"
           >
-            <div className="flex items-center justify-center gap-3 mb-6">
-              <HederaLogo size="lg" animated={true} />
+            <div className="flex items-center justify-center gap-4 mb-8">
+              <div className="flex items-center gap-3">
+                <HederaLogo size="lg" animated={true} />
+                <div className="w-12 h-12 relative">
+                  <Image
+                    src="/mediledger-logo.jpeg"
+                    alt="MediLedger Nexus Logo"
+                    width={48}
+                    height={48}
+                    className="rounded-lg object-contain"
+                    priority
+                  />
+                </div>
+              </div>
               <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
                 Hedera Integration Demo
               </h1>
