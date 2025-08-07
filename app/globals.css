@@ -166,6 +166,11 @@
   .hedera-logo.active {
     animation: hedera-pulse 1.5s infinite;
   }
+
+  .groq-spinner {
+    border-top-color: #00FF9D;
+    animation: spin 1s linear infinite;
+  }
 }
 
 /* Custom animations */

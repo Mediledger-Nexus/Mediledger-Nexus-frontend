@@ -106,3 +106,14 @@ export const generateMockTx = () => ({
   consensus_timestamp: new Date().toISOString(),
   status: Math.random() > 0.2 ? 'SUCCESS' : 'PENDING'
 }); 
+
+// Generate AI-enhanced transaction with Groq analysis
+export const generateAITx = (symptoms: string) => ({
+  ...generateMockTx(), // Original Hedera mock
+  groqAnalysis: {
+    urgency: Math.floor(1 + Math.random() * 10),
+    conditions: ['Possible viral infection'],
+    nextSteps: ['Monitor fever']
+  },
+  symptoms // Store raw input
+}); 
