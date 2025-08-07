@@ -116,7 +116,7 @@ export function PatientForm() {
                 ) : (
                   <span className="flex items-center gap-2">
                     <Brain className="w-4 h-4" />
-                    Get AI Assessment
+                    Get MediLedger Nexus AI Assessment
                   </span>
                 )}
               </Button>
@@ -128,7 +128,7 @@ export function PatientForm() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-white">
                 <Activity className="w-5 h-5 text-[#00FF9D]" />
-                AI Analysis Results
+                MediLedger Nexus AI Results
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -200,7 +200,7 @@ export function PatientForm() {
                 <div className="text-center py-8">
                   <Brain className="w-12 h-12 text-gray-400 mx-auto mb-4" />
                   <p className="text-gray-400">
-                    Enter your symptoms and click "Get AI Assessment" to receive analysis
+                    Enter your symptoms and click "Get MediLedger Nexus AI Assessment" to receive analysis
                   </p>
                 </div>
               )}

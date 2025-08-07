@@ -33,7 +33,7 @@ export const analyzeSymptoms = async (symptoms: string): Promise<GroqAnalysis> =
         model: "llama3-70b-8192",
         messages: [{
           role: "user",
-          content: `Analyze these symptoms for urgency (1-10), possible conditions, and next steps in JSON format: ${symptoms}`
+          content: `You are MediLedger Nexus AI, a helpful and friendly healthcare assistant. Analyze these symptoms for urgency (1-10), possible conditions, and next steps. First, speak directly to the patient in a clear, caring way, explaining what they should do. At the end, include a JSON summary on a new line, with this format: {"urgency":7,"conditions":["Flu"],"nextSteps":["Rest","Hydrate"]}. Symptoms: ${symptoms}`
         }],
         temperature: 0.7
       })
@@ -50,18 +50,23 @@ export const analyzeSymptoms = async (symptoms: string): Promise<GroqAnalysis> =
       throw new Error('Invalid response from Groq API');
     }
 
-    // Parse JSON response from AI
-    try {
-      const analysis = JSON.parse(content);
-      return {
-        urgency: analysis.urgency || 5,
-        conditions: analysis.conditions || ['Unable to determine'],
-        nextSteps: analysis.nextSteps || ['Consult healthcare provider']
-      };
-    } catch (parseError) {
-      console.error('Failed to parse Groq response:', parseError);
-      return mockGroqResponse();
+    // Extract JSON from the end of the response
+    const jsonMatch = content.match(/\{[\s\S]*\}/);
+    let analysis;
+    if (jsonMatch) {
+      try {
+        analysis = JSON.parse(jsonMatch[0]);
+      } catch (e) {
+        analysis = mockGroqResponse();
+      }
+    } else {
+      analysis = mockGroqResponse();
     }
+
+    return {
+      ...analysis,
+      advice: jsonMatch ? content.replace(jsonMatch[0], '').trim() : content.trim() // The natural language part
+    };
 
   } catch (error) {
     console.error('Groq Error:', error);
