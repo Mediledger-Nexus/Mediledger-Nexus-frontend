@@ -27,7 +27,7 @@ export default function RoadmapPage() {
       phase: "Phase 1",
       title: "Foundation & Core Infrastructure",
       status: "completed",
-      date: "Q1 2024",
+      date: "Q1 2025",
       items: [
         "Hedera Hashgraph integration",
         "IPFS storage implementation",
@@ -39,7 +39,7 @@ export default function RoadmapPage() {
       phase: "Phase 2",
       title: "Privacy & Security Layer",
       status: "completed",
-      date: "Q2 2024",
+      date: "Q2 2025",
       items: [
         "Zero-knowledge proof implementation",
         "Advanced encryption (AES-256)",
@@ -51,7 +51,7 @@ export default function RoadmapPage() {
       phase: "Phase 3",
       title: "Consent Management & NFTs",
       status: "in-progress",
-      date: "Q3 2024",
+      date: "Q3 2025",
       items: [
         "NFT-based consent tokens",
         "Granular permission system",
@@ -63,7 +63,7 @@ export default function RoadmapPage() {
       phase: "Phase 4",
       title: "AI & Analytics Engine",
       status: "planned",
-      date: "Q4 2024",
+      date: "Q4 2025",
       items: [
         "Federated learning implementation",
         "Privacy-preserving AI models",
@@ -82,7 +82,7 @@ export default function RoadmapPage() {
       phase: "Phase 6",
       title: "Enterprise & Scale",
       status: "planned",
-      date: "Q2 2025",
+      date: "Q2 2025/2026",
       items: [
         "Enterprise partnerships",
         "Healthcare system integrations",
