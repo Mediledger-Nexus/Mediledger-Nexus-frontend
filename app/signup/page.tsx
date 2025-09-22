@@ -11,9 +11,11 @@ import { ArrowRight, Mail, User, Lock, Shield } from "lucide-react"
 import Link from "next/link"
 import { Navigation } from "@/components/navigation"
 import { BackgroundVideo } from "@/components/background-video"
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
 
 export default function SignupPage() {
+  const router = useRouter()
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -23,6 +25,11 @@ export default function SignupPage() {
     agreeToTerms: false,
     subscribeNewsletter: true,
   })
+
+  useEffect(() => {
+    // Redirect to new auth flow
+    router.push('/auth')
+  }, [router])
 
   const fadeInUp = {
     initial: { opacity: 0, y: 60 },

@@ -11,14 +11,21 @@ import { ArrowRight, Mail, Lock, Github, Chrome } from "lucide-react"
 import Link from "next/link"
 import { Navigation } from "@/components/navigation"
 import { BackgroundVideo } from "@/components/background-video"
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
 
 export default function LoginPage() {
+  const router = useRouter()
   const [formData, setFormData] = useState({
     email: "",
     password: "",
     rememberMe: false,
   })
+
+  useEffect(() => {
+    // Redirect to new auth flow
+    router.push('/auth')
+  }, [router])
 
   const fadeInUp = {
     initial: { opacity: 0, y: 60 },
