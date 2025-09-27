@@ -3,7 +3,6 @@ import type { Metadata } from "next"
 import { GeistSans } from "geist/font/sans"
 import { GeistMono } from "geist/font/mono"
 import "./globals.css"
-import DemoBanner from "../components/demo-banner";
 
 export const metadata: Metadata = {
   title: "MediLedger Nexus - Decentralized Healthcare Records",
@@ -33,7 +32,6 @@ html {
         `}</style>
       </head>
       <body>
-        <DemoBanner />
         {children}
       </body>
     </html>

@@ -72,8 +72,14 @@ export default function DashboardPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-2 text-sm">
-                <p><span className="text-gray-400">Phone:</span> {session?.phoneNumber}</p>
-                <p><span className="text-gray-400">User ID:</span> {session?.uid}</p>
+                <p>
+                  <span className="text-gray-400">Phone:</span>
+                  <span className="text-white ml-1">{session?.phoneNumber}</span>
+                </p>
+                <p>
+                  <span className="text-gray-400">User ID:</span>
+                  <span className="text-white ml-1">{session?.uid}</span>
+                </p>
                 <p><span className="text-gray-400">Status:</span> 
                   <span className="text-green-400 ml-1">
                     {session?.isRegistered ? 'Registered' : 'Pending'}
@@ -91,9 +97,35 @@ export default function DashboardPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-2 text-sm">
-                <p><span className="text-gray-400">Wallet ID:</span> {session?.walletId || 'Not connected'}</p>
-                <p><span className="text-gray-400">Network:</span> Hedera Testnet</p>
+              <div className="space-y-3 text-sm">
+                <div>
+                  <p className="text-gray-400 mb-1">Wallet ID:</p>
+                  <div className="flex items-center gap-2 bg-slate-800/50 rounded px-3 py-2">
+                    <code className="text-cyan-300 text-sm font-mono break-all">
+                      {session?.walletId || 'Not connected'}
+                    </code>
+                    {session?.walletId && (
+                      <button
+                        onClick={() => {
+                          navigator.clipboard.writeText(session.walletId);
+                          // Optional: Show a toast notification here
+                          alert('Wallet ID copied to clipboard!');
+                        }}
+                        className="text-gray-400 hover:text-white ml-2"
+                        title="Copy to clipboard"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                        </svg>
+                      </button>
+                    )}
+                  </div>
+                </div>
+                <p>
+                  <span className="text-gray-400">Network:</span>
+                  <span className="text-white ml-1">{process.env.NEXT_PUBLIC_HEDERA_NETWORK || 'mainnet'}</span>
+                </p>
                 <p><span className="text-gray-400">Status:</span> 
                   <span className="text-green-400 ml-1">Active</span>
                 </p>

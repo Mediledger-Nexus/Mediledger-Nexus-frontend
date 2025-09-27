@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Wallet, Smartphone, Plus, ArrowRight, Loader2, CheckCircle, AlertCircle } from "lucide-react";
@@ -19,6 +19,7 @@ export function WalletConnect({ onSuccess, onError }: WalletConnectProps) {
   const [loading, setLoading] = useState(false);
   const [hcReady, setHcReady] = useState(false);
   const [pairingStringState, setPairingStringState] = useState<string>("");
+  const hashconnectRef = useRef<any>(null);
   // no refs needed; keep state minimal for reliability
 
   useEffect(() => {
@@ -59,6 +60,10 @@ export function WalletConnect({ onSuccess, onError }: WalletConnectProps) {
         return;
       }
 
+      // Resolve Hedera network from env (default: mainnet)
+      const envNet = (process.env.NEXT_PUBLIC_HEDERA_NETWORK || 'mainnet').toLowerCase();
+      const ledger = envNet === 'testnet' ? LedgerId.TESTNET : envNet === 'previewnet' ? LedgerId.PREVIEWNET : LedgerId.MAINNET;
+
       // App metadata for v3
       const origin = (typeof window !== 'undefined' && (window.location?.origin || '')) || 'http://localhost';
       const appMetadata = {
@@ -69,7 +74,8 @@ export function WalletConnect({ onSuccess, onError }: WalletConnectProps) {
       };
 
       // Initialize HashConnect v3: new HashConnect(ledger, projectId, metadata, debug)
-      const hashconnect: any = new HashConnect(LedgerId.TESTNET, projectId, appMetadata, true);
+      const hashconnect: any = new HashConnect(ledger, projectId, appMetadata, true);
+      hashconnectRef.current = hashconnect;
 
       // Register pairing event before init
       hashconnect.pairingEvent.on((pairingData: any) => {
@@ -97,7 +103,20 @@ export function WalletConnect({ onSuccess, onError }: WalletConnectProps) {
 
       // Init and open pairing modal (v3)
       await hashconnect.init();
-      hashconnect.openPairingModal({ themeMode: 'dark' });
+      // After init, try to surface a pairing string ASAP as a fallback UI
+      try {
+        const ps = (hashconnect as any).pairingString ||
+          (typeof (hashconnect as any).getPairingString === 'function' ? (hashconnect as any).getPairingString() : undefined);
+        if (ps) setPairingStringState(ps);
+      } catch {}
+
+      // Some versions/themes of the modal expect a full theme config. Call without options to avoid theme errors.
+      try {
+        hashconnect.openPairingModal();
+      } catch (e: any) {
+        console.error('HashConnect pairing modal error:', e);
+        onError('Failed to open HashPack pairing modal. Use the pairing string below in HashPack → DApp pairing.');
+      }
 
       // Listen for pairing
       // (Already registered above)
@@ -116,31 +135,40 @@ export function WalletConnect({ onSuccess, onError }: WalletConnectProps) {
     }
   };
 
-  const createCustodialWallet = async () => {
-    setLoading(true);
-    setStep('custodial');
-
+  const resetPairing = () => {
     try {
-      const walletData = await HederaLogger.createCustodialWallet();
-      
-      // Store wallet data securely (MVP: localStorage)
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('mediledger_custodial_wallet', JSON.stringify({
-          accountId: walletData.accountId,
-          privateKey: walletData.privateKey,
-          type: 'custodial'
-        }));
+      // Best-effort: if the instance offers a disconnect, try it
+      const hc: any = hashconnectRef.current;
+      if (hc && typeof hc.disconnect === 'function') {
+        hc.disconnect();
       }
+    } catch {}
+    // Advise the user to remove existing DApp connection in HashPack, then reload
+    if (typeof window !== 'undefined') {
+      alert('Tip: In HashPack, open DApp Connections and remove the pairing for this site. The page will now reload.');
+      window.location.reload();
+    }
+  };
 
-      onSuccess({
-        accountId: walletData.accountId,
-        type: 'custodial'
-      });
-    } catch (error: any) {
-      console.error('Error creating custodial wallet:', error);
-      onError(error.message || 'Failed to create custodial wallet');
-    } finally {
-      setLoading(false);
+  // Start HashPack Auth (OAuth-style) to let users create a non-custodial wallet with email
+  const startHashPackAuth = async () => {
+    try {
+      const authBase = process.env.NEXT_PUBLIC_HASHPACK_AUTH_BASE || 'https://auth.hashpack.app';
+      const clientId = process.env.NEXT_PUBLIC_HASHPACK_AUTH_CLIENT_ID || process.env.NEXT_PUBLIC_HASHCONNECT_PROJECT_ID;
+      if (!clientId) {
+        onError('Missing NEXT_PUBLIC_HASHPACK_AUTH_CLIENT_ID (or NEXT_PUBLIC_HASHCONNECT_PROJECT_ID).');
+        return;
+      }
+      const envNet = (process.env.NEXT_PUBLIC_HEDERA_NETWORK || 'mainnet').toLowerCase();
+      const origin = (typeof window !== 'undefined' && (window.location?.origin || '')) || 'http://localhost:3000';
+      const redirectUri = `${origin}/auth/callback`;
+      const url = `${authBase}/authorize?client_id=${encodeURIComponent(clientId)}&redirect_uri=${encodeURIComponent(redirectUri)}&network=${encodeURIComponent(envNet)}&response_type=code&scope=${encodeURIComponent('openid wallet')}`;
+      if (typeof window !== 'undefined') {
+        window.location.href = url;
+      }
+    } catch (e: any) {
+      console.error('Failed to start HashPack Auth:', e);
+      onError(e?.message || 'Failed to start HashPack Auth');
     }
   };
 
@@ -208,20 +236,38 @@ export function WalletConnect({ onSuccess, onError }: WalletConnectProps) {
                           <span>Advanced security features</span>
                         </div>
                       </div>
-                      <Button
-                        onClick={connectHashPack}
-                        disabled={loading || !hcReady}
-                        className="w-full mt-4 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white"
-                      >
-                        {hcReady ? 'Connect HashPack' : 'Loading HashConnect...'}
-                        <ArrowRight className="ml-2 h-4 w-4" />
-                      </Button>
+                      <div className="flex flex-col space-y-2">
+                        <Button
+                          onClick={connectHashPack}
+                          disabled={loading || !hcReady}
+                          className="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white"
+                        >
+                          {hcReady ? 'Connect HashPack' : 'Loading HashConnect...'}
+                          <ArrowRight className="ml-2 h-4 w-4" />
+                        </Button>
+                        <div className="flex items-center justify-between text-[11px] text-gray-500">
+                          <span>
+                            Network: {(process.env.NEXT_PUBLIC_HEDERA_NETWORK || 'mainnet').toLowerCase()}
+                          </span>
+                          <span>
+                            Project ID: {process.env.NEXT_PUBLIC_HASHCONNECT_PROJECT_ID ? 'set' : 'missing'}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Button variant="outline" size="sm" onClick={resetPairing} className="border-slate-600 text-gray-300 hover:bg-slate-700/50">
+                            Reset Pairing
+                          </Button>
+                          <Button variant="outline" size="sm" onClick={() => window.open('https://docs.hashpack.app/', '_blank')} className="border-slate-600 text-gray-300 hover:bg-slate-700/50">
+                            Troubleshoot
+                          </Button>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </CardContent>
               </Card>
 
-              {/* Custodial Option */}
+              {/* HashPack Auth Onboarding (Non-custodial, email-friendly) */}
               <Card className="bg-slate-800/30 border-slate-700/50 hover:border-purple-500/50 transition-all duration-300 cursor-pointer group">
                 <CardContent className="p-6">
                   <div className="flex items-start space-x-4">
@@ -230,31 +276,31 @@ export function WalletConnect({ onSuccess, onError }: WalletConnectProps) {
                     </div>
                     <div className="flex-1">
                       <h3 className="text-lg font-semibold text-white mb-2 group-hover:text-purple-400 transition-colors">
-                        Create New Wallet
+                        Create HashPack Wallet
                       </h3>
                       <p className="text-gray-400 text-sm mb-4">
-                        We'll create a secure custodial wallet for you on the Hedera network.
+                        Sign up with HashPack to create a non-custodial wallet using email. You keep full control of your keys.
                       </p>
                       <div className="space-y-2 text-xs text-gray-500">
                         <div className="flex items-center space-x-2">
                           <CheckCircle className="h-3 w-3 text-green-400" />
-                          <span>Instant setup</span>
+                          <span>Non-custodial (you own the keys)</span>
                         </div>
                         <div className="flex items-center space-x-2">
                           <CheckCircle className="h-3 w-3 text-green-400" />
-                          <span>No app required</span>
+                          <span>Email-friendly onboarding</span>
                         </div>
                         <div className="flex items-center space-x-2">
                           <AlertCircle className="h-3 w-3 text-yellow-400" />
-                          <span>Keys managed by MediLedger</span>
+                          <span>Works with HashPack app/extension</span>
                         </div>
                       </div>
                       <Button
-                        onClick={createCustodialWallet}
+                        onClick={startHashPackAuth}
                         disabled={loading}
                         className="w-full mt-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white"
                       >
-                        Create New Wallet
+                        Create HashPack Wallet
                         <ArrowRight className="ml-2 h-4 w-4" />
                       </Button>
                     </div>
@@ -315,6 +361,16 @@ export function WalletConnect({ onSuccess, onError }: WalletConnectProps) {
                     className="border-cyan-400 text-cyan-400 hover:bg-cyan-400/10"
                   >
                     Open HashPack Website
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      try { hashconnectRef.current?.openPairingModal?.(); } catch {}
+                    }}
+                    className="border-slate-600 text-gray-300 hover:bg-slate-700/50 ml-2"
+                  >
+                    Reopen Pairing Modal
                   </Button>
                 </div>
               </>

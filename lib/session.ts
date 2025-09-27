@@ -33,6 +33,9 @@ export class SessionManager {
     try {
       return jwt.verify(token, JWT_SECRET) as SessionData;
     } catch (error) {
+      // Fallback: try to parse unsigned session format
+      const parsed = parseUnsignedToken(token);
+      if (parsed) return parsed;
       console.error('Token verification failed:', error);
       return null;
     }
@@ -85,9 +88,39 @@ export class SessionManager {
  */
 export async function createSession(data: Record<string, any>): Promise<string> {
   // Sign provided data with 7-day expiration
-  const token = jwt.sign({ ...data }, JWT_SECRET, { expiresIn: '7d' });
-  if (typeof window !== 'undefined') {
-    localStorage.setItem('mediledger_session', token);
+  try {
+    const token = jwt.sign({ ...data }, JWT_SECRET, { expiresIn: '7d' });
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('mediledger_session', token);
+    }
+    return token;
+  } catch (e) {
+    // Browser-safe unsigned fallback (no crypto). Include exp for validity checks.
+    const exp = Math.floor(Date.now() / 1000) + 7 * 24 * 60 * 60;
+    const payload = { ...data, exp, __unsigned: true };
+    const raw = typeof btoa === 'function' ? btoa(JSON.stringify(payload)) : Buffer.from(JSON.stringify(payload), 'utf-8').toString('base64');
+    const token = `u.${raw}`;
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('mediledger_session', token);
+    }
+    return token;
   }
-  return token;
+}
+
+// Try to parse an unsigned session token created by the fallback above.
+function parseUnsignedToken(token: string): SessionData | null {
+  try {
+    if (!token || token.length < 3) return null;
+    // Expect format: 'u.' + base64(json)
+    if (!token.startsWith('u.')) return null;
+    const raw = token.slice(2);
+    const json = typeof atob === 'function' ? atob(raw) : Buffer.from(raw, 'base64').toString('utf-8');
+    const obj = JSON.parse(json);
+    if (!obj || typeof obj !== 'object') return null;
+    // Basic exp validation
+    if (typeof obj.exp !== 'number' || obj.exp <= Math.floor(Date.now() / 1000)) return null;
+    return obj as SessionData;
+  } catch {
+    return null;
+  }
 }
