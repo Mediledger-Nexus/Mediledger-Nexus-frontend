@@ -18,6 +18,11 @@ export default function DashboardPage() {
       router.push('/auth');
       return;
     }
+    // Enforce wallet connection before dashboard access
+    if (!userSession.walletId) {
+      router.push('/auth');
+      return;
+    }
     setSession(userSession);
     setLoading(false);
   }, [router]);

@@ -69,6 +69,15 @@ export default function HomePage() {
                 Get Started <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>
+            <Link href="/login">
+              <Button
+                variant="outline"
+                size="lg"
+                className="border-2 border-white/70 text-white hover:bg-white hover:text-black px-8 py-4 text-lg font-semibold rounded-full transition-all duration-300 bg-transparent"
+              >
+                Sign In
+              </Button>
+            </Link>
             <Button
               variant="outline"
               size="lg"

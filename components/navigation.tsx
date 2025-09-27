@@ -59,7 +59,7 @@ export function Navigation() {
           </div>
 
           <div className="hidden md:flex items-center space-x-4">
-            <Link href="/login">
+            <Link href="/login/connect">
               <Button variant="ghost" className="text-white hover:bg-slate-800">
                 Sign In
               </Button>
@@ -106,7 +106,7 @@ export function Navigation() {
                 Docs
               </Link>
               <div className="flex flex-col space-y-2 pt-4 border-t border-slate-800/50">
-                <Link href="/login">
+                <Link href="/login/connect">
                   <Button variant="ghost" className="w-full text-white hover:bg-slate-800">
                     Sign In
                   </Button>
