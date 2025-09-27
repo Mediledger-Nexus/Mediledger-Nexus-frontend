@@ -7,7 +7,10 @@ export interface SessionData {
   uid: string;
   phoneNumber: string;
   walletId?: string;
+  did?: string;
   isRegistered: boolean;
+  provider?: string;
+  network?: string;
   exp?: number;
 }
 

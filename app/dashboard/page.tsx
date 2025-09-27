@@ -23,6 +23,11 @@ export default function DashboardPage() {
       router.push('/auth');
       return;
     }
+    // Require DID before accessing dashboard
+    if (!userSession.did) {
+      router.push('/auth');
+      return;
+    }
     setSession(userSession);
     setLoading(false);
   }, [router]);
@@ -125,6 +130,15 @@ export default function DashboardPage() {
                         </svg>
                       </button>
                     )}
+                  </div>
+                </div>
+                {/* DID display */}
+                <div className="mt-3">
+                  <p className="text-gray-400 mb-1">DID:</p>
+                  <div className="flex items-center gap-2 bg-slate-800/50 rounded px-3 py-2">
+                    <code className="text-purple-300 text-sm font-mono break-all">
+                      {session?.did || 'Not generated'}
+                    </code>
                   </div>
                 </div>
                 <p>

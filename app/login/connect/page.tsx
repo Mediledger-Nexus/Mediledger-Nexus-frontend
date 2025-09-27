@@ -8,6 +8,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Wallet, Loader2 } from "lucide-react";
 import { WalletConnect } from "@/components/auth/WalletConnect";
 import { createSession } from "@/lib/session";
+import { computeDid } from "@/lib/did";
+import { HederaLogger } from "@/lib/hedera";
 
 export default function ConnectLoginPage() {
   const router = useRouter();
@@ -18,13 +20,30 @@ export default function ConnectLoginPage() {
     try {
       setBusy(true);
       // Minimal session: requires walletId present to access dashboard
+      const network = (process.env.NEXT_PUBLIC_HEDERA_NETWORK || 'mainnet').toLowerCase();
+      const did = computeDid(walletInfo.accountId, network);
+
+      // Log DID creation to HCS (best-effort; non-blocking on failure)
+      try {
+        await HederaLogger.logRegistration({
+          type: 'did_created',
+          walletId: walletInfo.accountId,
+          did,
+          network,
+          timestamp: new Date().toISOString(),
+        } as any);
+      } catch (e) {
+        console.warn('HCS log (did_created) failed:', e);
+      }
+
       await createSession({
         uid: `wallet-${walletInfo.accountId}`,
         phoneNumber: "",
         walletId: walletInfo.accountId,
+        did,
         isRegistered: false,
         provider: walletInfo.type,
-        network: (process.env.NEXT_PUBLIC_HEDERA_NETWORK || 'mainnet').toLowerCase(),
+        network,
       });
       router.replace("/dashboard");
     } catch (e: any) {
