@@ -50,7 +50,7 @@ export function RoleSelection({ onRoleSelect }: RoleSelectionProps) {
               </div>
               <CardTitle className="text-2xl text-white mb-2">I am a Patient</CardTitle>
               <CardDescription className="text-gray-300">
-                Secure your medical records and manage your healthcare data
+                Secure your medical records and manage your health data
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
