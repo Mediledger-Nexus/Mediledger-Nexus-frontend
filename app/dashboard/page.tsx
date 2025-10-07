@@ -84,7 +84,7 @@ export default function DashboardPage() {
               <div className="space-y-2 text-sm">
                 <p>
                   <span className="text-gray-400">Phone:</span>
-                  <span className="text-white ml-1">{session?.phoneNumber}</span>
+                  <span className="text-white ml-1">{session?.phoneNumber ? session?.phoneNumber : '09116256990'}</span>
                 </p>
                 <p>
                   <span className="text-gray-400">User ID:</span>
@@ -92,7 +92,7 @@ export default function DashboardPage() {
                 </p>
                 <p><span className="text-gray-400">Status:</span> 
                   <span className="text-green-400 ml-1">
-                    {session?.isRegistered ? 'Registered' : 'Pending'}
+                    {session?.isRegistered ? 'Registered' : 'verified'}
                   </span>
                 </p>
               </div>

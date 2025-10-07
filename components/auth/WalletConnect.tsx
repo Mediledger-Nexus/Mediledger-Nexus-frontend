@@ -20,7 +20,6 @@ export function WalletConnect({ onSuccess, onError }: WalletConnectProps) {
   const [hcReady, setHcReady] = useState(false);
   const [pairingStringState, setPairingStringState] = useState<string>("");
   const hashconnectRef = useRef<any>(null);
-  // no refs needed; keep state minimal for reliability
 
   useEffect(() => {
     // Dynamically import hashconnect on client
@@ -65,7 +64,14 @@ export function WalletConnect({ onSuccess, onError }: WalletConnectProps) {
       const ledger = envNet === 'testnet' ? LedgerId.TESTNET : envNet === 'previewnet' ? LedgerId.PREVIEWNET : LedgerId.MAINNET;
 
       // App metadata for v3
-      const origin = (typeof window !== 'undefined' && (window.location?.origin || '')) || 'http://localhost';
+      let origin = '';
+      if (typeof window !== 'undefined' && window.location?.origin) {
+        origin = window.location.origin;
+      } else if (process.env.NEXT_PUBLIC_SITE_URL) {
+        origin = process.env.NEXT_PUBLIC_SITE_URL;
+      } else {
+        origin = 'http://localhost:3000';
+      }
       const appMetadata = {
         name: 'MediLedger Nexus',
         description: 'Decentralized Healthcare Data Platform',
@@ -160,7 +166,14 @@ export function WalletConnect({ onSuccess, onError }: WalletConnectProps) {
         return;
       }
       const envNet = (process.env.NEXT_PUBLIC_HEDERA_NETWORK || 'mainnet').toLowerCase();
-      const origin = (typeof window !== 'undefined' && (window.location?.origin || '')) || 'http://localhost:3000';
+      let origin = '';
+      if (typeof window !== 'undefined' && window.location?.origin) {
+        origin = window.location.origin;
+      } else if (process.env.NEXT_PUBLIC_SITE_URL) {
+        origin = process.env.NEXT_PUBLIC_SITE_URL;
+      } else {
+        origin = 'http://localhost:3000';
+      }
       const redirectUri = `${origin}/auth/callback`;
       const url = `${authBase}/authorize?client_id=${encodeURIComponent(clientId)}&redirect_uri=${encodeURIComponent(redirectUri)}&network=${encodeURIComponent(envNet)}&response_type=code&scope=${encodeURIComponent('openid wallet')}`;
       if (typeof window !== 'undefined') {
