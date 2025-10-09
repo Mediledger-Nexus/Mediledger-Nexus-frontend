@@ -85,6 +85,7 @@ export default function DashboardPage() {
                 <p>
                   <span className="text-gray-400">Phone:</span>
                   <span className="text-white ml-1">{session?.phoneNumber}</span>
+                  <span className="text-white ml-1">{session?.phoneNumber ? session?.phoneNumber : '091********'}</span>
                 </p>
                 <p>
                   <span className="text-gray-400">User ID:</span>
