@@ -8,14 +8,12 @@ import { SessionManager } from "@/lib/session";
 import { getDemoRecords, grantConsent, revokeConsent, getConsents, addNotification } from "@/lib/demoStore";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
-import { useToast } from "@/components/ui/use-toast";
 
 export default function RecordsPage() {
   // Interactive demo data from local store
   const records = getDemoRecords();
   const consents = getConsents();
   const session = SessionManager.getSession();
-  const { toast } = useToast();
 
   // UI state
   const [detailsRec, setDetailsRec] = useState<any | null>(null);
@@ -39,7 +37,6 @@ export default function RecordsPage() {
         timestamp: new Date().toISOString(),
       });
       setDetailsRec(rec);
-      toast({ title: "Record opened", description: `${rec.title} details shown` });
     } catch {}
   };
 
@@ -61,7 +58,6 @@ export default function RecordsPage() {
       });
       revokeConsent(rec.id, granteeDid);
       addNotification({ type: 'consent', text: `You revoked ${rec.title} from ${granteeDid}` });
-      toast({ title: "Consent revoked", description: `${rec.title} access revoked` });
     } catch {}
   };
 
@@ -80,7 +76,6 @@ export default function RecordsPage() {
       });
       grantConsent(shareRec.id, selectedProviderDid);
       addNotification({ type: 'consent', text: `You shared ${shareRec.title} with ${selectedProviderDid}` });
-      toast({ title: "Consent granted", description: `${shareRec.title} shared` });
       setShareRec(null);
     } catch {}
   };

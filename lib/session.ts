@@ -83,24 +83,22 @@ export class SessionManager {
     return session !== null && (session.exp || 0) > Date.now() / 1000;
   }
 }
+
 /**
  * Create a session token from arbitrary session data and persist it client-side.
  * This is used by the AuthFlow to store role, wallet, and profile in a JWT
  * without requiring a Firebase User instance.
  */
 export async function createSession(data: Record<string, any>): Promise<string> {
-  const sessionData: Partial<SessionData> = {
-    ...data,
-    isRegistered: true,
-    exp: Math.floor(Date.now() / 1000) + (7 * 24 * 60 * 60), // 7 days
-  };
+  // Sign provided data with 7-day expiration
   try {
-    const token = jwt.sign(sessionData, JWT_SECRET, { expiresIn: '7d' });
+    const token = jwt.sign({ ...data }, JWT_SECRET, { expiresIn: '7d' });
     if (typeof window !== 'undefined') {
       localStorage.setItem('mediledger_session', token);
     }
     return token;
   } catch (e) {
+    // Browser-safe unsigned fallback (no crypto). Include exp for validity checks.
     const exp = Math.floor(Date.now() / 1000) + 7 * 24 * 60 * 60;
     const payload = { ...data, exp, __unsigned: true };
     const raw = typeof btoa === 'function' ? btoa(JSON.stringify(payload)) : Buffer.from(JSON.stringify(payload), 'utf-8').toString('base64');

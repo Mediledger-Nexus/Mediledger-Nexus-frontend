@@ -236,6 +236,18 @@ export function PatientRegistrationForm({ onSuccess, onError, phoneNumber }: Pat
               </div>
             </div>
 
+            <div className="space-y-2">
+              <Label htmlFor="nationalId" className="text-white">
+                National ID / Passport / Hospital ID {age && age >= 1 ? '*' : '(Optional for babies)'}
+              </Label>
+              <Input
+                id="nationalId"
+                placeholder="Enter ID number"
+                value={formData.nationalId}
+                onChange={(e) => handleInputChange('nationalId', e.target.value)}
+                className="bg-slate-800/50 border-slate-600 text-white placeholder:text-gray-400 focus:border-purple-500"
+              />
+            </div>
           </div>
 
           {/* Guardian Information */}
