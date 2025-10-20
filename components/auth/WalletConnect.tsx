@@ -9,6 +9,8 @@ import { LedgerId } from "@hashgraph/sdk";
 // Import HashConnect only on client to avoid SSR issues
 let HashConnect: any = null;
 
+
+
 interface WalletConnectProps {
   onSuccess: (walletData: { accountId: string; type: 'hashpack' | 'custodial' }) => void;
   onError: (error: string) => void;
