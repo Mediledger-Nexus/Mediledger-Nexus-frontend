@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
       body: body.toString(),
       // Avoid caching sensitive requests
       cache: 'no-store',
-    });
+    });``
 
     const data = await resp.json().catch(() => ({} as any));
     if (!resp.ok) {

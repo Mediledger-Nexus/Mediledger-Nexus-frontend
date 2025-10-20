@@ -191,14 +191,33 @@ export default function DashboardPage() {
               <Button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white">
                 Upload Records
               </Button>
-              <Button variant="outline" className="border-cyan-400 text-cyan-400 hover:bg-cyan-400/10">
+              <Button 
+                variant="outline" 
+                className="border-cyan-400 text-cyan-400 hover:bg-cyan-400/10"
+                onClick={() => router.push('/dashboard/records')}
+              >
                 View Records
               </Button>
-              <Button variant="outline" className="border-green-400 text-green-400 hover:bg-green-400/10">
+              <Button 
+                variant="outline" 
+                className="border-green-400 text-green-400 hover:bg-green-400/10"
+                onClick={() => router.push('/dashboard/consent')}
+              >
                 Manage Access
               </Button>
-              <Button variant="outline" className="border-yellow-400 text-yellow-400 hover:bg-yellow-400/10">
-                AI Insights
+              <Button 
+                variant="outline" 
+                className="border-yellow-400 text-yellow-400 hover:bg-yellow-400/10"
+                onClick={() => router.push('/dashboard/did')}
+              >
+                View DID
+              </Button>
+              <Button 
+                variant="outline" 
+                className="border-orange-400 text-orange-400 hover:bg-orange-400/10"
+                onClick={() => router.push('/dashboard/audit')}
+              >
+                Audit Trail
               </Button>
             </div>
           </CardContent>

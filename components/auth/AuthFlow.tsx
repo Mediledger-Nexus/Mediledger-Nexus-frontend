@@ -5,13 +5,16 @@ import { RoleSelection } from "./RoleSelection";
 import { PhoneLogin } from "./PhoneLogin";
 import { PatientRegistrationForm } from "./PatientRegistrationForm";
 import { OrganizationRegistrationForm } from "./OrganizationRegistrationForm";
+import { DoctorRegistrationForm } from "./DoctorRegistrationForm";
 import { WalletConnect } from "./WalletConnect";
 import { HederaLogger } from "@/lib/hedera";
 import { createSession } from "@/lib/session";
+import { createDID } from "@/lib/didRegistry";
+import { computeDid } from "@/lib/did";
 import { useRouter } from "next/navigation";
 
 type Step = 'role' | 'phone' | 'registration' | 'wallet' | 'complete';
-type UserRole = 'patient' | 'organization';
+type UserRole = 'patient' | 'organization' | 'doctor';
 
 interface UserData {
   role?: UserRole;
@@ -108,23 +111,43 @@ export function AuthFlow() {
       await HederaLogger.logRegistration(completionEvent);
       console.log('Registration completion logged to HCS');
 
-      // Create session
+      // Create DID for the user
+      const network = process.env.NEXT_PUBLIC_HEDERA_NETWORK || 'testnet';
+      const publicKey = walletInfo.publicKey || 'demo-public-key';
+      
+      const didDocument = await createDID(
+        walletInfo.accountId,
+        publicKey,
+        userData.role!,
+        userData.profile,
+        network
+      );
+      
+      console.log('DID created:', didDocument.id);
+
+      // Create session with DID
       const sessionData = {
         walletId: walletInfo.accountId,
         role: userData.role!,
         phoneNumber: userData.phoneNumber,
         profile: userData.profile,
-        walletType: walletInfo.type
+        walletType: walletInfo.type,
+        did: didDocument.id,
+        network: network
       };
 
       const token = await createSession(sessionData);
-      console.log('Session created');
+      console.log('Session created with DID');
 
       setCurrentStep('complete');
       
-      // Redirect to dashboard after a short delay
+      // Redirect to appropriate dashboard after a short delay
       setTimeout(() => {
-        router.push('/dashboard');
+        if (userData.role === 'doctor') {
+          router.push('/doctor');
+        } else {
+          router.push('/dashboard');
+        }
       }, 2000);
 
     } catch (error) {
@@ -202,6 +225,14 @@ export function AuthFlow() {
         />
       )}
 
+      {currentStep === 'registration' && userData.role === 'doctor' && (
+        <DoctorRegistrationForm 
+          onSuccess={handleRegistrationSuccess}
+          onError={handleError}
+          phoneNumber={userData.phoneNumber}
+        />
+      )}
+
       {currentStep === 'wallet' && (
         <WalletConnect 
           onSuccess={handleWalletSuccess}
@@ -218,7 +249,7 @@ export function AuthFlow() {
               </svg>
             </div>
             <h2 className="text-2xl font-bold text-green-400 mb-2">
-              {userData.role === 'patient' ? 'Patient' : 'Organization'} Registration Complete!
+              {userData.role === 'patient' ? 'Patient' : userData.role === 'doctor' ? 'Doctor' : 'Organization'} Registration Complete!
             </h2>
             <p className="text-gray-400 mb-4">Your account has been created and logged to the blockchain.</p>
             {loading && <p className="text-sm text-gray-500">Redirecting to dashboard...</p>}

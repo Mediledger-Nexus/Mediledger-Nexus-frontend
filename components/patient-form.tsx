@@ -8,20 +8,31 @@ import { Textarea } from '@/components/ui/textarea'
 import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Brain, Activity, AlertTriangle, CheckCircle } from 'lucide-react'
-import { analyzeSymptoms, logToHedera } from '@/lib/groq'
+import { analyzeSymptomsWithHedera } from '@/lib/hederaAI'
+import { logToHedera } from '@/lib/groq'
 import { generateAITx } from '@/lib/hedera-utils'
 import GroqSpinner from '@/components/ui/groq-spinner'
 
-interface GroqAnalysis {
+interface AIAnalysis {
   urgency: number;
   conditions: string[];
   nextSteps: string[];
+  advice: string;
+  recommendations?: Array<{
+    type: 'doctor' | 'hospital' | 'medication' | 'test' | 'lifestyle';
+    title: string;
+    description: string;
+    priority: 'low' | 'medium' | 'high' | 'urgent';
+    location?: string;
+    contact?: string;
+  }>;
+  hcsLogId?: string;
 }
 
 export function PatientForm() {
   const [symptoms, setSymptoms] = useState('')
   const [analyzing, setAnalyzing] = useState(false)
-  const [analysis, setAnalysis] = useState<GroqAnalysis | null>(null)
+  const [analysis, setAnalysis] = useState<AIAnalysis | null>(null)
   const [txResult, setTxResult] = useState<any>(null)
 
   const handleAIAnalysis = async () => {
@@ -32,8 +43,8 @@ export function PatientForm() {
 
     setAnalyzing(true)
     try {
-      // Get AI analysis
-      const result = await analyzeSymptoms(symptoms)
+      // Get AI analysis with Hedera integration
+      const result = await analyzeSymptomsWithHedera(symptoms)
       setAnalysis(result)
       
       // Log to Hedera
@@ -185,6 +196,52 @@ export function PatientForm() {
                       ))}
                     </div>
                   </div>
+
+                  {/* AI Recommendations */}
+                  {analysis.recommendations && analysis.recommendations.length > 0 && (
+                    <div>
+                      <h4 className="font-semibold text-white mb-4 flex items-center">
+                        <Brain className="mr-2 h-5 w-5 text-purple-400" />
+                        AI Recommendations
+                      </h4>
+                      <div className="grid gap-3">
+                        {analysis.recommendations.map((rec, index) => (
+                          <div key={index} className="bg-slate-800/50 border border-slate-700/50 rounded-lg p-3">
+                            <div className="flex items-start justify-between mb-2">
+                              <h5 className="font-medium text-white">{rec.title}</h5>
+                              <Badge 
+                                variant="outline" 
+                                className={`text-xs ${
+                                  rec.priority === 'urgent' ? 'border-red-400 text-red-400' : 
+                                  rec.priority === 'high' ? 'border-orange-400 text-orange-400' : 
+                                  rec.priority === 'medium' ? 'border-yellow-400 text-yellow-400' : 'border-green-400 text-green-400'
+                                }`}
+                              >
+                                {rec.priority}
+                              </Badge>
+                            </div>
+                            <p className="text-gray-300 text-sm mb-2">{rec.description}</p>
+                            {rec.location && (
+                              <p className="text-gray-400 text-xs">📍 {rec.location}</p>
+                            )}
+                            {rec.contact && (
+                              <p className="text-gray-400 text-xs">📞 {rec.contact}</p>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* HCS Logging Info */}
+                  {analysis.hcsLogId && (
+                    <Alert className="bg-cyan-900/20 border-cyan-500/30">
+                      <Activity className="h-4 w-4 text-cyan-400" />
+                      <AlertDescription className="text-cyan-300">
+                        Analysis logged to Hedera Consensus Service (ID: {analysis.hcsLogId.slice(-8)})
+                      </AlertDescription>
+                    </Alert>
+                  )}
 
                   {/* Transaction Info */}
                   {txResult && (

@@ -6,13 +6,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { User, Building2, ArrowRight, Stethoscope, Heart } from "lucide-react";
 
 interface RoleSelectionProps {
-  onRoleSelect: (role: 'patient' | 'organization') => void;
+  onRoleSelect: (role: 'patient' | 'organization' | 'doctor') => void;
 }
 
 export function RoleSelection({ onRoleSelect }: RoleSelectionProps) {
-  const [selectedRole, setSelectedRole] = useState<'patient' | 'organization' | null>(null);
+  const [selectedRole, setSelectedRole] = useState<'patient' | 'organization' | 'doctor' | null>(null);
 
-  const handleRoleSelect = (role: 'patient' | 'organization') => {
+  const handleRoleSelect = (role: 'patient' | 'organization' | 'doctor') => {
     setSelectedRole(role);
     setTimeout(() => onRoleSelect(role), 300); // Small delay for visual feedback
   };
@@ -34,7 +34,7 @@ export function RoleSelection({ onRoleSelect }: RoleSelectionProps) {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
           {/* Patient Card */}
           <Card 
             className={`relative overflow-hidden cursor-pointer transition-all duration-300 transform hover:scale-105 ${
@@ -130,6 +130,56 @@ export function RoleSelection({ onRoleSelect }: RoleSelectionProps) {
                 }}
               >
                 Continue as Organization
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Doctor Card */}
+          <Card 
+            className={`relative overflow-hidden cursor-pointer transition-all duration-300 transform hover:scale-105 ${
+              selectedRole === 'doctor' 
+                ? 'bg-gradient-to-br from-green-600/20 to-emerald-600/20 border-green-500 scale-105' 
+                : 'bg-slate-900/50 border-slate-700/50 hover:border-green-500/50'
+            } backdrop-blur-sm`}
+            onClick={() => handleRoleSelect('doctor')}
+          >
+            <CardHeader className="text-center pb-4">
+              <div className="mx-auto w-16 h-16 bg-gradient-to-r from-green-600 to-emerald-600 rounded-full flex items-center justify-center mb-4">
+                <Stethoscope className="h-8 w-8 text-white" />
+              </div>
+              <CardTitle className="text-2xl text-white mb-2">I am a Doctor</CardTitle>
+              <CardDescription className="text-gray-300">
+                Access patient records and provide secure healthcare services
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-3">
+                <div className="flex items-center space-x-3">
+                  <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                  <span className="text-gray-300">Verified medical license</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                  <span className="text-gray-300">Patient consent management</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                  <span className="text-gray-300">Secure record access</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                  <span className="text-gray-300">Write prescriptions & notes</span>
+                </div>
+              </div>
+              <Button 
+                className="w-full mt-6 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold py-3 rounded-lg transition-all duration-300"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleRoleSelect('doctor');
+                }}
+              >
+                Continue as Doctor
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </CardContent>
