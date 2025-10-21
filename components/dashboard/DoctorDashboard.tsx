@@ -37,12 +37,11 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAIDiagnostic } from '@/hooks/useAIDiagnostic';
-import NFTConsentService, { ConsentGrant } from '@/services/nftConsentService';
-import HEALTokenService from '@/services/healTokenService';
+import { createConsentRequest, getDoctorConsentRequests, getDoctorConsents, grantEmergencyAccess } from '@/lib/consentManager';
 
 interface DoctorDashboardProps {
   doctorDid: string;
-  doctorName: string;
+  doctorPrivateKey: string;
 }
 
 interface Patient {
@@ -66,15 +65,13 @@ interface ConsentRequest {
   createdAt: string;
 }
 
-export function DoctorDashboard({ doctorDid, doctorName }: DoctorDashboardProps) {
+export function DoctorDashboard({ doctorDid, doctorPrivateKey }: DoctorDashboardProps) {
   const [activeTab, setActiveTab] = useState('patients');
   const [patients, setPatients] = useState<Patient[]>([]);
-  const [consentRequests, setConsentRequests] = useState<ConsentRequest[]>([]);
+  const [consentRequests, setConsentRequests] = useState<any[]>([]);
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [isLoading, setIsLoading] = useState(true);
-  const [tokenBalance, setTokenBalance] = useState(0);
-  const [tokenRewards, setTokenRewards] = useState<any[]>([]);
 
   const {
     submitDiagnosis,
@@ -84,79 +81,49 @@ export function DoctorDashboard({ doctorDid, doctorName }: DoctorDashboardProps)
     agents,
     selectedAgent,
     selectAgent
-  } = useAIDiagnostic({ patientDid: doctorDid, patientPrivateKey: 'demo-key' });
+  } = useAIDiagnostic({ patientDid: doctorDid, patientPrivateKey: doctorPrivateKey });
+
+  const loadDoctorData = () => {
+    // Load consent requests and active consents
+    const requests = getDoctorConsentRequests(doctorDid);
+    const consents = getDoctorConsents(doctorDid);
+
+    // Convert consents to patient format for display
+    const patientsWithConsents: Patient[] = consents.map((consent: any) => ({
+      id: consent.patientDid,
+      name: `Patient ${consent.patientDid.slice(0, 8)}`,
+      did: consent.patientDid,
+      hasActiveConsent: true,
+      consentExpiry: consent.expiresAt
+    }));
+
+    setPatients(patientsWithConsents);
+    setConsentRequests(requests);
+  };
 
   // Load doctor data
   useEffect(() => {
-    const loadDoctorData = async () => {
-      setIsLoading(true);
-      try {
-        // Load mock patients for demo
-        const mockPatients: Patient[] = [
-          {
-            id: '1',
-            name: 'John Doe',
-            did: '0.0.123456',
-            lastVisit: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-            hasActiveConsent: true,
-            consentExpiry: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
-          },
-          {
-            id: '2',
-            name: 'Jane Smith',
-            did: '0.0.789012',
-            lastVisit: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
-            hasActiveConsent: false
-          },
-          {
-            id: '3',
-            name: 'Mike Johnson',
-            did: '0.0.345678',
-            lastVisit: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-            hasActiveConsent: true,
-            consentExpiry: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).toISOString(),
-            emergencyAccess: true
-          }
-        ];
-
-        const mockRequests: ConsentRequest[] = [
-          {
-            id: 'req_1',
-            patientDid: '0.0.999999',
-            patientName: 'Alice Brown',
-            requestedPermissions: ['read', 'view'],
-            dataTypes: ['vitals', 'medications'],
-            purpose: 'Routine checkup and medication review',
-            status: 'pending',
-            createdAt: new Date().toISOString()
-          }
-        ];
-
-        setPatients(mockPatients);
-        setConsentRequests(mockRequests);
-
-        // Load token data
-        const balance = await HEALTokenService.getTokenBalance(doctorDid);
-        const rewards = await HEALTokenService.getRewardHistory(doctorDid);
-        setTokenBalance(balance);
-        setTokenRewards(rewards);
-
-      } catch (error) {
-        console.error('Failed to load doctor data:', error);
-        toast.error('Failed to load dashboard data');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
     loadDoctorData();
   }, [doctorDid]);
 
   // Request consent from patient
   const handleRequestConsent = async (patientDid: string, permissions: string[], dataTypes: string[], purpose: string) => {
     try {
-      // In a real implementation, this would create a consent request
+      const consentPermissions = permissions.map(type => ({
+        type: type as any,
+        scope: dataTypes as any
+      }));
+
+      await createConsentRequest(
+        doctorDid,
+        patientDid,
+        consentPermissions,
+        30, // 30 days default
+        purpose
+      );
+
       toast.success('Consent request sent to patient');
+      loadDoctorData(); // Refresh data
     } catch (error) {
       console.error('Failed to request consent:', error);
       toast.error('Failed to send consent request');
@@ -182,9 +149,9 @@ export function DoctorDashboard({ doctorDid, doctorName }: DoctorDashboardProps)
   // Emergency access
   const handleEmergencyAccess = async (patient: Patient, reason: string) => {
     try {
-      await NFTConsentService.grantEmergencyConsent(
-        patient.did,
+      await grantEmergencyAccess(
         doctorDid,
+        patient.did,
         reason,
         24 // 24 hours
       );
@@ -243,7 +210,7 @@ export function DoctorDashboard({ doctorDid, doctorName }: DoctorDashboardProps)
             Healthcare Provider Dashboard
           </h1>
           <p className="text-gray-400 mt-2">
-            Dr. {doctorName} • MediLedger Nexus Healthcare Portal
+            Doctor Portal • MediLedger Nexus Healthcare System
           </p>
         </div>
 
@@ -251,14 +218,11 @@ export function DoctorDashboard({ doctorDid, doctorName }: DoctorDashboardProps)
           <Badge className="bg-green-500 text-white">
             {patients.filter(p => p.hasActiveConsent).length} Active Consents
           </Badge>
-          <Badge className="bg-yellow-500 text-white">
-            {tokenBalance} HEAL Tokens
-          </Badge>
         </div>
       </div>
 
       {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card className="bg-slate-800/50 border-slate-700">
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
@@ -296,22 +260,10 @@ export function DoctorDashboard({ doctorDid, doctorName }: DoctorDashboardProps)
             </div>
           </CardContent>
         </Card>
-
-        <Card className="bg-slate-800/50 border-slate-700">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <Award className="h-6 w-6 text-yellow-400" />
-              <div>
-                <p className="text-sm text-gray-400">Token Rewards</p>
-                <p className="text-2xl font-bold text-white">{tokenRewards.length}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="patients" className="flex items-center gap-2">
             <Users className="h-4 w-4" />
             Patients
@@ -327,10 +279,6 @@ export function DoctorDashboard({ doctorDid, doctorName }: DoctorDashboardProps)
           <TabsTrigger value="emergency" className="flex items-center gap-2">
             <AlertTriangle className="h-4 w-4" />
             Emergency
-          </TabsTrigger>
-          <TabsTrigger value="rewards" className="flex items-center gap-2">
-            <Coins className="h-4 w-4" />
-            Rewards
           </TabsTrigger>
         </TabsList>
 
@@ -661,77 +609,6 @@ export function DoctorDashboard({ doctorDid, doctorName }: DoctorDashboardProps)
                     ))}
                   </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="rewards" className="space-y-4">
-          <Card className="bg-slate-800/50 border-slate-700">
-            <CardHeader>
-              <CardTitle className="text-white flex items-center gap-2">
-                <Coins className="h-5 w-5" />
-                Token Rewards & Earnings
-              </CardTitle>
-              <CardDescription className="text-gray-400">
-                Track your HEAL token earnings for healthcare services
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid md:grid-cols-3 gap-4">
-                <div className="bg-slate-700/30 p-4 rounded-lg">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Coins className="h-5 w-5 text-yellow-400" />
-                    <span className="text-sm font-medium text-white">Current Balance</span>
-                  </div>
-                  <p className="text-2xl font-bold text-yellow-400">{tokenBalance.toLocaleString()}</p>
-                  <p className="text-xs text-gray-400">HEAL Tokens</p>
-                </div>
-
-                <div className="bg-slate-700/30 p-4 rounded-lg">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Award className="h-5 w-5 text-green-400" />
-                    <span className="text-sm font-medium text-white">Total Earned</span>
-                  </div>
-                  <p className="text-2xl font-bold text-green-400">
-                    {tokenRewards.reduce((sum, reward) => sum + reward.amount, 0)}
-                  </p>
-                  <p className="text-xs text-gray-400">From all activities</p>
-                </div>
-
-                <div className="bg-slate-700/30 p-4 rounded-lg">
-                  <div className="flex items-center gap-2 mb-2">
-                    <TrendingUp className="h-5 w-5 text-blue-400" />
-                    <span className="text-sm font-medium text-white">This Month</span>
-                  </div>
-                  <p className="text-2xl font-bold text-blue-400">
-                    {tokenRewards.filter(r => new Date(r.timestamp) > new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)).reduce((sum, r) => sum + r.amount, 0)}
-                  </p>
-                  <p className="text-xs text-gray-400">Recent earnings</p>
-                </div>
-              </div>
-
-              <div>
-                <h4 className="font-semibold text-white mb-3">Recent Rewards</h4>
-                {tokenRewards.length === 0 ? (
-                  <p className="text-gray-400">No rewards earned yet</p>
-                ) : (
-                  <div className="space-y-2">
-                    {tokenRewards.slice(0, 5).map((reward, index) => (
-                      <div key={index} className="flex items-center justify-between p-3 bg-slate-700/30 rounded-lg">
-                        <div>
-                          <p className="text-sm font-medium text-white">{reward.description}</p>
-                          <p className="text-xs text-gray-400">
-                            {new Date(reward.timestamp).toLocaleDateString()}
-                          </p>
-                        </div>
-                        <Badge className="bg-green-500 text-white">
-                          +{reward.amount} HEAL
-                        </Badge>
-                      </div>
-                    ))}
-                  </div>
-                )}
               </div>
             </CardContent>
           </Card>

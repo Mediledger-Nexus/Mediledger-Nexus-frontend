@@ -47,6 +47,9 @@ export function Navigation() {
             <Link href="/roadmap" className="text-gray-300 hover:text-white transition-colors">
               Roadmap
             </Link>
+            <Link href="/doctor-dashboard" className="text-green-400 hover:text-green-300 transition-colors font-medium">
+              For Doctors
+            </Link>
             <Link href="/hedera-demo" className="text-purple-400 hover:text-purple-300 transition-colors font-medium">
               Hedera Demo
             </Link>
@@ -95,6 +98,9 @@ export function Navigation() {
               </Link>
               <Link href="/roadmap" className="text-gray-300 hover:text-white transition-colors">
                 Roadmap
+              </Link>
+              <Link href="/doctor-dashboard" className="text-green-400 hover:text-green-300 transition-colors font-medium">
+                For Doctors
               </Link>
               <Link href="/hedera-demo" className="text-purple-400 hover:text-purple-300 transition-colors font-medium">
                 Hedera Demo
