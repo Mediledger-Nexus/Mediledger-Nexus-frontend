@@ -20,6 +20,9 @@ import {
   TransactionId
 } from "@hashgraph/sdk";
 
+// Import HEAL token service for rewards
+import HEALTokenService from './healTokenService';
+
 // Simple UUID generator using crypto.randomUUID
 const generateUUID = (): string => {
   if (typeof crypto !== 'undefined' && crypto.randomUUID) {
@@ -160,7 +163,24 @@ export class NFTConsentService {
         updatedAt: now
       };
 
-      console.log(`Demo: Created consent NFT: ${consentId} for doctor ${requesterDid}`);
+      console.log(`Created consent NFT: ${consentId} for doctor ${requesterDid}`);
+
+      // Log to HCS for audit trail
+      await this.logConsentToHCS('grant', consentGrant);
+
+      // Reward patient with HEAL tokens for granting consent
+      try {
+        const tokenReward = await HEALTokenService.rewardConsentGrant(
+          patientDid,
+          consentId,
+          dataTypes
+        );
+        console.log(`Rewarded ${tokenReward.amount} HEAL tokens to patient ${patientDid}`);
+      } catch (rewardError) {
+        console.error('Failed to reward HEAL tokens:', rewardError);
+        // Don't fail the consent grant if token reward fails
+      }
+
       return consentGrant;
     }
 
@@ -267,7 +287,7 @@ export class NFTConsentService {
       { type: 'emergency', scope: ['all'], conditions: { reason, durationHours } }
     ];
 
-    return await this.grantConsent(
+    const consentGrant = await this.grantConsent(
       patientDid,
       doctorDid,
       permissions,
@@ -275,6 +295,20 @@ export class NFTConsentService {
       `Emergency access: ${reason}`,
       Math.ceil(durationHours / 24) // Convert hours to days
     );
+
+    // Reward patient for enabling emergency access
+    try {
+      const tokenReward = await HEALTokenService.rewardConsentGrant(
+        patientDid,
+        consentGrant.id,
+        ['emergency_data']
+      );
+      console.log(`Emergency access reward: ${tokenReward.amount} HEAL tokens to patient ${patientDid}`);
+    } catch (rewardError) {
+      console.error('Failed to reward emergency access tokens:', rewardError);
+    }
+
+    return consentGrant;
   }
 
   /**
