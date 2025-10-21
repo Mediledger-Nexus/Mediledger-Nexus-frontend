@@ -9,6 +9,7 @@ import {
   Shield,
   Coins,
   Brain,
+  Globe,
   Lock,
   Zap,
   Users,
@@ -143,7 +144,7 @@ export default function PrivacyEconomyDemoPage() {
           </div>
 
           <Tabs defaultValue="vault" className="w-full">
-            <TabsList className="grid w-full grid-cols-3">
+            <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger value="vault" className="flex items-center gap-2">
                 <Shield className="h-4 w-4" />
                 Health Vault
@@ -156,6 +157,10 @@ export default function PrivacyEconomyDemoPage() {
                 <Coins className="h-4 w-4" />
                 Token Economy
               </TabsTrigger>
+              <TabsTrigger value="fhir" className="flex items-center gap-2">
+                <Globe className="h-4 w-4" />
+                FHIR Integration
+              </TabsTrigger>
             </TabsList>
 
             <TabsContent value="vault" className="mt-6">
@@ -163,6 +168,10 @@ export default function PrivacyEconomyDemoPage() {
                 patientDid={userDid}
                 patientPrivateKey={userPrivateKey}
               />
+            </TabsContent>
+
+            <TabsContent value="tokens" className="mt-6">
+              <HEALTokenDashboard userDid={userDid} />
             </TabsContent>
 
             <TabsContent value="ai" className="mt-6">
@@ -173,8 +182,11 @@ export default function PrivacyEconomyDemoPage() {
               />
             </TabsContent>
 
-            <TabsContent value="tokens" className="mt-6">
-              <HEALTokenDashboard userDid={userDid} />
+            <TabsContent value="fhir" className="mt-6">
+              <FHIRIntegration
+                patientDid={userDid}
+                patientPrivateKey={userPrivateKey}
+              />
             </TabsContent>
           </Tabs>
         </div>

@@ -1,7 +1,14 @@
 // Advanced Record Management System for MediLedger Nexus
 // Handles encryption, IPFS storage, and consent verification
 
-import CryptoJS from 'crypto-js';
+// Web Crypto API for encryption (better Next.js compatibility)
+let crypto: any;
+if (typeof window !== 'undefined') {
+  crypto = window.crypto;
+} else {
+  // For Node.js environment (SSR)
+  crypto = require('crypto').webcrypto;
+}
 
 export interface MedicalRecord {
   id: string;
@@ -18,6 +25,8 @@ export interface MedicalRecord {
     tags: string[];
     size: number;
     mimeType?: string;
+    deleted?: boolean;
+    deletedBy?: string;
   };
   ipfsHash?: string;
   hcsSequence?: string;
@@ -72,46 +81,98 @@ function writeJSON<T>(key: string, value: T) {
   localStorage.setItem(key, JSON.stringify(value));
 }
 
-// Generate encryption key from password/passphrase
-function generateEncryptionKey(passphrase: string, salt: string): string {
-  return CryptoJS.PBKDF2(passphrase, salt, {
-    keySize: 256/32,
-    iterations: 10000
-  }).toString();
+// Generate encryption key from password/passphrase using Web Crypto API
+async function generateEncryptionKey(passphrase: string, salt: string): Promise<CryptoKey> {
+  // Convert passphrase and salt to Uint8Array
+  const encoder = new TextEncoder();
+  const passphraseData = encoder.encode(passphrase);
+  const saltData = encoder.encode(salt);
+
+  // Import the passphrase as a key for PBKDF2
+  const baseKey = await crypto.subtle.importKey(
+    'raw',
+    passphraseData,
+    'PBKDF2',
+    false,
+    ['deriveBits', 'deriveKey']
+  );
+
+  // Derive key using PBKDF2
+  return await crypto.subtle.deriveKey(
+    {
+      name: 'PBKDF2',
+      salt: saltData,
+      iterations: 10000,
+      hash: 'SHA-256',
+    },
+    baseKey,
+    {
+      name: 'AES-GCM',
+      length: 256,
+    },
+    false,
+    ['encrypt', 'decrypt']
+  );
 }
 
-// Encrypt data
-function encryptData(data: any, key: string): { encrypted: string; iv: string } {
-  const iv = CryptoJS.lib.WordArray.random(128/8);
-  const encrypted = CryptoJS.AES.encrypt(JSON.stringify(data), key, {
-    iv: iv,
-    mode: CryptoJS.mode.GCM,
-    padding: CryptoJS.pad.Pkcs7
-  });
-  
+// Encrypt data using Web Crypto API
+async function encryptData(data: any, key: CryptoKey): Promise<{ encrypted: string; iv: string }> {
+  const iv = crypto.getRandomValues(new Uint8Array(12)); // 96 bits for GCM
+  const encoder = new TextEncoder();
+  const dataBuffer = encoder.encode(JSON.stringify(data));
+
+  const encrypted = await crypto.subtle.encrypt(
+    {
+      name: 'AES-GCM',
+      iv: iv,
+    },
+    key,
+    dataBuffer
+  );
+
+  // Convert to base64 for storage
+  const encryptedArray = new Uint8Array(encrypted);
+  const encryptedBase64 = btoa(String.fromCharCode(...encryptedArray));
+  const ivBase64 = btoa(String.fromCharCode(...iv));
+
   return {
-    encrypted: encrypted.toString(),
-    iv: iv.toString()
+    encrypted: encryptedBase64,
+    iv: ivBase64
   };
 }
 
-// Decrypt data
-function decryptData(encryptedData: string, key: string, iv: string): any {
-  const decrypted = CryptoJS.AES.decrypt(encryptedData, key, {
-    iv: CryptoJS.lib.WordArray.from(iv),
-    mode: CryptoJS.mode.GCM,
-    padding: CryptoJS.pad.Pkcs7
-  });
-  
-  return JSON.parse(decrypted.toString(CryptoJS.enc.Utf8));
+// Decrypt data using Web Crypto API
+async function decryptData(encryptedData: string, key: CryptoKey, ivBase64: string): Promise<any> {
+  const iv = new Uint8Array(
+    atob(ivBase64).split('').map(char => char.charCodeAt(0))
+  );
+
+  const encryptedArray = new Uint8Array(
+    atob(encryptedData).split('').map(char => char.charCodeAt(0))
+  );
+
+  const decrypted = await crypto.subtle.decrypt(
+    {
+      name: 'AES-GCM',
+      iv: iv,
+    },
+    key,
+    encryptedArray
+  );
+
+  const decoder = new TextDecoder();
+  const decryptedText = decoder.decode(decrypted);
+  return JSON.parse(decryptedText);
 }
 
 // Upload to IPFS (mock implementation - replace with actual IPFS client)
 async function uploadToIPFS(data: any): Promise<string> {
   // In a real implementation, you would use a library like ipfs-http-client
   // For now, we'll simulate an IPFS hash
-  const hash = CryptoJS.SHA256(JSON.stringify(data)).toString();
-  return `Qm${hash.substring(0, 44)}`; // Simulate IPFS hash format
+  const hash = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(JSON.stringify(data)));
+  const hashArray = new Uint8Array(hash);
+  const hashString = Array.from(hashArray, byte => byte.toString(16).padStart(2, '0')).join('');
+  return `Qm${hashString.substring(0, 44)}`; // Simulate IPFS hash format
 }
 
 // Download from IPFS (mock implementation)
@@ -134,14 +195,16 @@ export async function createMedicalRecord(
 ): Promise<MedicalRecord> {
   const recordId = `record-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
   const now = new Date().toISOString();
-  
+
   // Generate encryption parameters
-  const salt = CryptoJS.lib.WordArray.random(128/8).toString();
-  const encryptionKey = passphrase ? generateEncryptionKey(passphrase, salt) : 'demo-key';
-  
+  const salt = btoa(String.fromCharCode(...crypto.getRandomValues(new Uint8Array(16))));
+  const encryptionKey = passphrase ?
+    await generateEncryptionKey(passphrase, salt) :
+    await generateEncryptionKey('demo-key', salt);
+
   // Encrypt content
-  const { encrypted, iv } = encryptData(content, encryptionKey);
-  
+  const { encrypted, iv } = await encryptData(content, encryptionKey);
+
   // Create record
   const record: MedicalRecord = {
     id: recordId,
@@ -220,20 +283,35 @@ export async function getMedicalRecords(
 
   // Decrypt records if passphrase provided
   if (passphrase) {
-    return patientRecords.map(record => ({
-      ...record,
-      content: decryptRecordContent(record, passphrase)
-    }));
+    const decryptedRecords = [];
+    for (const record of patientRecords) {
+      try {
+        const key = await generateEncryptionKey(passphrase, record.encryption.salt);
+        const decryptedContent = await decryptData(record.content.encrypted, key, record.content.iv);
+
+        decryptedRecords.push({
+          ...record,
+          content: decryptedContent
+        });
+      } catch (error) {
+        console.error('Failed to decrypt record:', error);
+        decryptedRecords.push({
+          ...record,
+          content: { error: 'Failed to decrypt content' }
+        });
+      }
+    }
+    return decryptedRecords;
   }
 
   return patientRecords;
 }
 
 // Decrypt record content
-export function decryptRecordContent(record: MedicalRecord, passphrase: string): any {
+export async function decryptRecordContent(record: MedicalRecord, passphrase: string): Promise<any> {
   try {
-    const key = generateEncryptionKey(passphrase, record.encryption.salt);
-    return decryptData(record.content.encrypted, key, record.content.iv);
+    const key = await generateEncryptionKey(passphrase, record.encryption.salt);
+    return await decryptData(record.content.encrypted, key, record.content.iv);
   } catch (error) {
     console.error('Failed to decrypt record:', error);
     return { error: 'Failed to decrypt content' };
@@ -249,11 +327,11 @@ export async function updateMedicalRecord(
 ): Promise<MedicalRecord | null> {
   const allRecords = readJSON<MedicalRecord[]>(KEYS.records, []);
   const recordIndex = allRecords.findIndex(r => r.id === recordId);
-  
+
   if (recordIndex === -1) return null;
 
   const record = allRecords[recordIndex];
-  
+
   // Check access permissions
   const hasAccess = await checkRecordAccess(record.patientDid, updaterDid);
   if (!hasAccess) {
@@ -274,8 +352,8 @@ export async function updateMedicalRecord(
 
   // Re-encrypt if content changed
   if (updates.content && passphrase) {
-    const { encrypted, iv } = encryptData(updates.content, 
-      generateEncryptionKey(passphrase, record.encryption.salt));
+    const key = await generateEncryptionKey(passphrase, record.encryption.salt);
+    const { encrypted, iv } = await encryptData(updates.content, key);
     updatedRecord.content = {
       encrypted,
       iv,
@@ -306,11 +384,11 @@ export async function deleteMedicalRecord(
 ): Promise<boolean> {
   const allRecords = readJSON<MedicalRecord[]>(KEYS.records, []);
   const recordIndex = allRecords.findIndex(r => r.id === recordId);
-  
+
   if (recordIndex === -1) return false;
 
   const record = allRecords[recordIndex];
-  
+
   // Check access permissions
   const hasAccess = await checkRecordAccess(record.patientDid, deleterDid);
   if (!hasAccess) {
@@ -401,8 +479,8 @@ export function getRecordAccessLogs(recordId: string): RecordAccess[] {
 // Get shared records for a DID
 export function getSharedRecords(did: string): RecordShare[] {
   const allShares = readJSON<RecordShare[]>(KEYS.shares, []);
-  return allShares.filter(share => 
-    share.sharedWith === did && 
+  return allShares.filter(share =>
+    share.sharedWith === did &&
     share.status === 'active' &&
     (!share.expiresAt || new Date(share.expiresAt) > new Date())
   );
@@ -503,12 +581,13 @@ export function initializeDemoRecords() {
   }
 }
 
-// Auto-initialize demo records when module loads
+// Auto-initialize demo records when module loads (only in browser)
 if (typeof window !== 'undefined') {
   const existingData = localStorage.getItem(KEYS.records);
   if (!existingData) {
     initializeDemoRecords();
   }
 }
+
 
 

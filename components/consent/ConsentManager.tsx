@@ -36,7 +36,12 @@ import {
 } from "@/lib/consentManager";
 import { SessionManager } from "@/lib/session";
 
-export function ConsentManager() {
+interface ConsentManagerProps {
+  patientDid: string;
+  patientPrivateKey: string;
+}
+
+export function ConsentManager({ patientDid, patientPrivateKey }: ConsentManagerProps) {
   const [activeConsents, setActiveConsents] = useState<ConsentGrant[]>([]);
   const [pendingRequests, setPendingRequests] = useState<ConsentRequest[]>([]);
   const [auditTrail, setAuditTrail] = useState<any[]>([]);
@@ -52,14 +57,12 @@ export function ConsentManager() {
     loadConsentData();
     // Check for expired consents
     checkExpiredConsents();
-  }, []);
+  }, [patientDid]);
 
   const loadConsentData = () => {
-    if (!session?.did) return;
-
-    const consents = getPatientConsents(session.did);
-    const requests = getPendingConsentRequests(session.did);
-    const audit = getAuditTrail(session.did);
+    const consents = getPatientConsents(patientDid);
+    const requests = getPendingConsentRequests(patientDid);
+    const audit = getAuditTrail(patientDid);
 
     setActiveConsents(consents);
     setPendingRequests(requests);
@@ -68,7 +71,7 @@ export function ConsentManager() {
 
   const handleGrantConsent = async (requestId: string) => {
     try {
-      await grantConsent(requestId, session.did, customExpiryDays);
+      await grantConsent(requestId, patientDid, customExpiryDays);
       loadConsentData();
       setShowRequestDialog(false);
       setSelectedRequest(null);
@@ -79,7 +82,7 @@ export function ConsentManager() {
 
   const handleDenyConsent = async (requestId: string) => {
     try {
-      await denyConsentRequest(requestId, session.did, denyReason);
+      await denyConsentRequest(requestId, patientDid, denyReason);
       loadConsentData();
       setShowRequestDialog(false);
       setSelectedRequest(null);
@@ -91,7 +94,7 @@ export function ConsentManager() {
 
   const handleRevokeConsent = async (consentId: string) => {
     try {
-      await revokeConsent(consentId, session.did);
+      await revokeConsent(consentId, patientDid);
       loadConsentData();
       setShowRevokeDialog(false);
       setSelectedConsent(null);
@@ -486,3 +489,5 @@ export function ConsentManager() {
     </div>
   );
 }
+
+export { ConsentManager as ConsentManagementInterface };
