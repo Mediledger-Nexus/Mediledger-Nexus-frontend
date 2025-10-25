@@ -496,19 +496,215 @@ We welcome contributions from the healthcare and blockchain communities!
 ## ❓ **Frequently Asked Questions**
 
 ### **🔐 How secure is my medical data?**
-Your medical data is encrypted with AES-256 and stored in a decentralized manner. Access requires explicit consent via NFT tokens, and all activities are logged on the Hedera blockchain for complete transparency.
+Your medical data is encrypted with AES-256 and stored in a decentralized manner. Access requires explicit consent via NFT tokens, and all activities are logged on the Hedera blockchain for complete transparency and audit trails.
 
 ### **🤖 How does the AI work without seeing my data?**
-We use federated learning and zero-knowledge proofs. AI models are trained on encrypted data patterns without ever accessing raw medical information.
+We use federated learning and zero-knowledge proofs. AI models are trained on encrypted data patterns without ever accessing raw medical information, ensuring complete privacy while enabling valuable insights.
 
 ### **⚡ Why Hedera instead of other blockchains?**
-Hedera offers enterprise-grade security, 10,000+ TPS throughput, 3-5 second finality, and carbon-negative operations - perfect for healthcare applications.
+Hedera offers enterprise-grade security, 10,000+ TPS throughput, 3-5 second finality, and carbon-negative operations - perfect for healthcare applications requiring high performance and regulatory compliance.
 
 ### **🔄 Can I export my data?**
-Yes! You have complete data portability. Export your health records in standard formats (HL7 FHIR, JSON, PDF) at any time.
+Yes! You have complete data portability. Export your health records in standard formats (HL7 FHIR, JSON, PDF) at any time. Your data belongs to you, not the platform.
 
 ### **🚨 What happens in emergencies?**
-Emergency access protocols allow healthcare providers to access critical information instantly when lives are at stake, with full audit logging.
+Emergency access protocols allow healthcare providers to access critical information instantly when lives are at stake, with full audit logging and patient notification once the emergency is resolved.
+
+### **💰 How much does it cost to use MediLedger Nexus?**
+- **Testnet**: Completely free for development and testing
+- **Mainnet**: Only pay for Hedera network fees (fractions of a cent per transaction)
+- **No subscription fees** or hidden costs - you only pay for actual blockchain usage
+
+### **🏥 Can my doctor or hospital use this system?**
+Absolutely! MediLedger Nexus is designed for seamless integration with existing healthcare systems. We support HL7 FHIR standards and can integrate with major Electronic Health Record (EHR) systems.
+
+### **📱 Is there a mobile app?**
+Currently, MediLedger Nexus is web-based and works on all devices. Mobile apps for iOS and Android are planned for Phase 2 of our roadmap, expected in Q2 2024.
+
+### **🌍 Which countries is this available in?**
+The platform is globally accessible, but healthcare regulations vary by country. We ensure compliance with HIPAA (US), GDPR (EU), and other regional healthcare data protection laws.
+
+### **🔗 How do I connect my existing healthcare data?**
+You can upload medical records manually through our secure dashboard, or request exports from your current healthcare providers. We support common formats like PDF, HL7 FHIR, and DICOM imaging files.
+
+### **⏰ How long does it take to set up?**
+- **Account Creation**: 2-3 minutes
+- **Wallet Connection**: 1-2 minutes with HashPack
+- **First Health Record Upload**: 5-10 minutes
+- **Complete Setup**: Under 15 minutes for basic usage
+
+### **👨‍⚕️ I'm a healthcare provider - how do I get started?**
+Healthcare providers can register as "Doctor" or "Organization" during account creation. You'll need to connect a HashPack wallet and can immediately start requesting consent from patients.
+
+### **🧪 Is this ready for production use?**
+The platform is currently in active development. While core features are functional, we recommend it for research, development, and pilot programs rather than mission-critical healthcare operations.
+
+### **🔧 What are the technical requirements?**
+- **Browser**: Modern browsers (Chrome, Firefox, Safari, Edge)
+- **Internet**: Stable internet connection for blockchain operations
+- **Wallet**: HashPack wallet for Hedera blockchain integration
+- **No special hardware** required - runs on standard computers and mobile devices
+
+### **📊 How do I track who accessed my data?**
+Every access is logged on the Hedera blockchain with immutable audit trails. You can view detailed access logs in your dashboard, including who accessed what data, when, and for what purpose.
+
+### **🔐 Can I revoke access at any time?**
+Yes! You have complete control. Revoke consent with a single click, which burns the NFT token and immediately prevents further access. The provider receives instant notification.
+
+### **🤝 How do I share data with family members?**
+You can grant specific permissions to family members or caregivers through the consent management system. Each person gets their own access level and audit trail.
+
+### **💾 Where is my data actually stored?**
+Your data is encrypted and stored across multiple locations:
+- **Local encryption** before leaving your device
+- **IPFS** for decentralized storage
+- **Arweave** for permanent archival
+- **Blockchain** for access permissions and audit trails
+
+### **🛡️ What if I lose access to my wallet?**
+You can recover access through HashPack's recovery options. For critical medical data, we recommend setting up multiple recovery methods and emergency contacts in your HashPack wallet.
+
+### **⚕️ Can I use this with my existing doctor?**
+Yes! Patients can invite any healthcare provider to use the platform. Doctors simply need to create an account and connect their HashPack wallet to start receiving consent requests.
+
+### **📈 How does this improve healthcare outcomes?**
+- **Faster diagnosis** through AI assistance and complete medical history access
+- **Reduced errors** from missing or incomplete medical information
+- **Better coordination** between healthcare providers with shared access
+- **Patient empowerment** through complete data control and transparency
+
+### **🔄 Can I switch back to traditional systems?**
+Absolutely! Your data remains portable and accessible. You can export all records at any time and continue using traditional healthcare systems alongside MediLedger Nexus.
+
+### **🚀 How do I get started as a developer?**
+1. Clone the repository and install dependencies
+2. Set up your HashPack wallet and get testnet HBAR (free)
+3. Follow our development setup guide
+4. Join our Discord community for support and collaboration
+
+### **📚 What programming languages and frameworks are used?**
+- **Frontend**: React 18, Next.js 14, TypeScript
+- **Styling**: Tailwind CSS with custom components
+- **State Management**: Zustand for client state
+- **Blockchain**: Hedera Hashgraph SDK
+- **AI Integration**: Groq API for medical analysis
+
+### **🔒 How does the consent system actually work?**
+When you grant consent:
+1. An NFT is minted on Hedera representing your permission
+2. The NFT is transferred to the healthcare provider's wallet
+3. The provider can access only the data you specified
+4. All access is logged on the blockchain for transparency
+5. You can revoke consent anytime, burning the NFT
+
+### **🌐 Is my data shared internationally?**
+Only with your explicit consent and only for the purposes you approve. We comply with international data transfer regulations and give you complete control over where and how your data is used.
+
+### **💡 What makes this different from other health apps?**
+- **True ownership**: You control your data, not corporations
+- **Blockchain security**: Immutable audit trails and cryptographic verification
+- **AI assistance**: Medical-grade AI analysis while protecting privacy
+- **Interoperability**: Works with existing healthcare systems via HL7 FHIR
+
+### **📱 Can I access this offline?**
+Basic viewing of your health records is available offline. However, blockchain operations (consents, sharing) require internet connectivity for security and transparency.
+
+### **🆘 What if I need help or support?**
+- **Documentation**: Comprehensive guides in this README
+- **Discord Community**: Active community support and discussions
+- **GitHub Issues**: Bug reports and feature requests
+- **Email Support**: For enterprise and partnership inquiries
+
+### **🔬 Can researchers access my data?**
+Only with your explicit consent and only anonymized data. You have complete control over research participation and can withdraw consent at any time.
+
+### **⚖️ How do you handle legal compliance?**
+We maintain compliance with:
+- **HIPAA** (Health Insurance Portability and Accountability Act)
+- **GDPR** (General Data Protection Regulation)
+- **HL7 FHIR** (Healthcare interoperability standards)
+- **Regional regulations** as applicable
+
+### **🔄 What happens if the company shuts down?**
+Your data remains accessible because:
+- It's stored on decentralized networks (IPFS, Arweave)
+- Access permissions are on the public blockchain
+- You can export all data at any time
+- No vendor lock-in or proprietary formats
+
+### **📊 How do you measure success?**
+Success metrics include:
+- **Patient control**: Data ownership and consent management
+- **Healthcare efficiency**: Reduced time to diagnosis and treatment
+- **Privacy protection**: Zero data breaches or unauthorized access
+- **System reliability**: 99.9% uptime and fast blockchain finality
+
+### **🤝 Can I contribute to the project?**
+Absolutely! We welcome contributions from:
+- **Developers**: Code improvements and new features
+- **Healthcare professionals**: Clinical expertise and validation
+- **Security researchers**: Vulnerability assessments and hardening
+- **Documentation writers**: Clear guides and user education
+
+### **💰 Is there a token or cryptocurrency involved?**
+The platform uses Hedera's native HBAR token only for network fees. There are no platform-specific tokens or cryptocurrency requirements. All transactions are transparent and cost-effective.
+
+### **🔧 Can I run this on my own server?**
+Yes! The platform is open-source and can be self-hosted. You'll need to:
+- Set up your own Hedera accounts and HCS topics
+- Configure your own AI services (optional)
+- Deploy using Docker or similar containerization
+- Maintain your own infrastructure and compliance
+
+### **📈 What's the roadmap for new features?**
+- **Phase 1** ✅: Core platform and NFT consent system
+- **Phase 2** 🚧: Mobile apps and advanced AI features
+- **Phase 3** 📋: Enterprise deployment tools and global scaling
+- **Phase 4** 🎯: Metaverse integration and quantum-resistant security
+
+### **🛡️ What if there's a security vulnerability?**
+We take security seriously:
+- **Bug bounty program** for responsible disclosure
+- **Regular security audits** by third-party firms
+- **Immediate patches** for any discovered vulnerabilities
+- **Transparent communication** about security incidents
+
+### **🌟 Why should I trust this platform?**
+Trust factors include:
+- **Open source code** - inspect everything yourself
+- **Blockchain transparency** - all actions are verifiable
+- **Third-party audits** - security and compliance validation
+- **Healthcare expertise** - built by medical and blockchain professionals
+- **Regulatory compliance** - adherence to healthcare data laws
+
+### **🔄 How do I migrate from another health platform?**
+Migration process:
+1. **Export data** from your current platform
+2. **Create MediLedger account** and connect wallet
+3. **Upload historical records** through secure dashboard
+4. **Set up consents** for current healthcare providers
+5. **Verify data integrity** and medical history completeness
+
+### **💬 How active is the community?**
+- **Discord**: Active daily discussions and support
+- **GitHub**: Regular code contributions and issue resolution
+- **Twitter**: Updates on development and healthcare integration
+- **Healthcare partnerships**: Collaboration with medical institutions
+
+### **📋 What are the system requirements for healthcare organizations?**
+For enterprise deployment:
+- **Scalable infrastructure** for multiple facilities
+- **Integration capabilities** with existing EHR systems
+- **Compliance reporting** for regulatory requirements
+- **Staff training** and onboarding programs
+- **24/7 support** and maintenance agreements
+
+### **🎯 What's the vision for the future?**
+Our vision is to create:
+- **Global health data commons** where patients control their data worldwide
+- **AI-powered healthcare** that respects privacy and empowers patients
+- **Seamless interoperability** between all healthcare systems
+- **Patient-centered care** where individuals are true partners in their health
 
 ---
 
