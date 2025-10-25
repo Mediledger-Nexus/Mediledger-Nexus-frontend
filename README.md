@@ -240,19 +240,47 @@ mediledger-nexus-frontend/
 
 ---
 
-## 🔐 **Security & Privacy**
+## 🛡️ **Security & Protection**
 
-### **🛡️ Data Protection**
-- **End-to-End Encryption**: AES-256 encryption for all medical data
-- **Zero-Knowledge Proofs**: Verify data validity without revealing content
-- **Blockchain Audit Trails**: Immutable logs of all data access
-- **Multi-Factor Authentication**: Wallet-based identity verification
+### **🛡️ Security Policy**
+MediLedger Nexus takes security seriously, especially given the sensitive nature of healthcare data. See our [Security Policy](SECURITY.md) for:
 
-### **⚖️ Compliance**
-- **HIPAA Compliant**: Healthcare data protection standards
-- **GDPR Ready**: European data protection regulations
-- **HL7 FHIR Standards**: Healthcare interoperability protocols
-- **Audit Logging**: Comprehensive compliance reporting
+- **Vulnerability reporting** procedures and responsible disclosure
+- **Bug bounty program** with rewards up to $5,000
+- **Security best practices** for contributors
+- **Compliance requirements** for healthcare regulations
+
+### **📋 Code of Conduct**
+We maintain a professional and inclusive environment. Our [Code of Conduct](CODE_OF_CONDUCT.md) ensures:
+
+- **Respectful collaboration** among all contributors
+- **Professional communication** standards
+- **Inclusive environment** for diverse perspectives
+- **Clear enforcement** guidelines for violations
+
+### **🤝 Contributing Guidelines**
+Ready to contribute? Our [Contributing Guide](CONTRIBUTING.md) provides:
+
+- **Development setup** instructions
+- **Code standards** and best practices
+- **Testing requirements** and healthcare compliance
+- **Security considerations** for medical applications
+- **Community guidelines** and recognition programs
+
+### **🔒 Protection Measures**
+
+**Your Code is Protected:**
+- ✅ **MIT License** - Clear open source licensing
+- ✅ **Comprehensive .gitignore** - Sensitive files excluded
+- ✅ **Security policy** - Vulnerability handling procedures
+- ✅ **Code of conduct** - Professional collaboration standards
+- ✅ **Contributing guidelines** - Quality control measures
+
+**Healthcare-Specific Security:**
+- 🔐 **HIPAA compliance** requirements for all contributions
+- 🔐 **Privacy-preserving** development practices
+- 🔐 **Audit trail** maintenance for medical data handling
+- 🔐 **Zero-knowledge** architecture principles
 
 ---
 
