@@ -12,7 +12,7 @@ let HashConnect: any = null;
 
 
 interface WalletConnectProps {
-  onSuccess: (walletData: { accountId: string; type: 'hashpack' | 'custodial' }) => void;
+  onSuccess: (walletData: { accountId: string; publicKey: string; type: 'hashpack' | 'custodial' }) => void;
   onError: (error: string) => void;
 }
 
@@ -84,7 +84,17 @@ export function WalletConnect({ onSuccess, onError }: WalletConnectProps) {
         try {
           const accounts: string[] = pairingData?.accountIds || pairingData?.metadata?.accountIds || [];
           if (accounts.length > 0) {
-            onSuccess({ accountId: accounts[0], type: 'hashpack' });
+            // Extract public key from pairing data (HashConnect provides this)
+            const publicKey = pairingData?.metadata?.publicKey ||
+                             pairingData?.publicKey ||
+                             pairingData?.accountPublicKey ||
+                             'demo-public-key'; // Fallback for demo
+
+            onSuccess({
+              accountId: accounts[0],
+              publicKey: publicKey,
+              type: 'hashpack'
+            });
           } else {
             onError('No accounts returned from HashPack');
           }

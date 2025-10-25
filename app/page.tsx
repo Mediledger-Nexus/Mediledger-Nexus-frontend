@@ -6,8 +6,30 @@ import { ArrowRight, Shield, Zap, Users, Database, Brain, Play } from "lucide-re
 import Link from "next/link"
 import { Navigation } from "@/components/navigation"
 import { BackgroundVideo } from "@/components/background-video"
+import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
+import { SessionManager } from "@/lib/session"
 
 export default function HomePage() {
+  const router = useRouter()
+  const [session, setSession] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const userSession = SessionManager.getSession()
+    if (userSession && SessionManager.isAuthenticated()) {
+      // Check if user has doctor-like credentials AND is actually a doctor
+      if ((userSession.walletId || userSession.did) && userSession.role === 'doctor') {
+        router.push('/doctor-dashboard')
+        return
+      }
+      router.push('/dashboard')
+      return
+    }
+    setSession(userSession)
+    setLoading(false)
+  }, [router])
+
   const fadeInUp = {
     initial: { opacity: 0, y: 60 },
     animate: { opacity: 1, y: 0 },
@@ -20,6 +42,17 @@ export default function HomePage() {
         staggerChildren: 0.2,
       },
     },
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-400 mx-auto mb-4"></div>
+          <p className="text-gray-400">Loading...</p>
+        </div>
+      </div>
+    )
   }
 
   return (

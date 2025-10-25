@@ -9,7 +9,7 @@ interface DashboardRouterProps {
   patientDid: string;
   patientPrivateKey: string;
   doctorDid?: string;
-  doctorName?: string;
+  doctorPrivateKey?: string;
 }
 
 export function DashboardRouter({
@@ -17,13 +17,13 @@ export function DashboardRouter({
   patientDid,
   patientPrivateKey,
   doctorDid,
-  doctorName
+  doctorPrivateKey
 }: DashboardRouterProps) {
-  if (userRole === 'doctor' && doctorDid && doctorName) {
+  if (userRole === 'doctor' && doctorDid && doctorPrivateKey) {
     return (
       <DoctorDashboard
         doctorDid={doctorDid}
-        doctorName={doctorName}
+        doctorPrivateKey={doctorPrivateKey}
       />
     );
   }

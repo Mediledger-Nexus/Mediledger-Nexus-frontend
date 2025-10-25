@@ -49,10 +49,13 @@ export default function HashPackAuthCallbackPage() {
           provider: "hashpack",
           network,
           profile,
+          role: profile?.role || "patient", // Default to patient if role not specified
         });
 
         setStatus("Wallet connected. Redirecting...");
-        router.replace("/dashboard");
+        // Redirect based on role if available, otherwise default to dashboard
+        const userRole = profile?.role || "patient";
+        router.replace(userRole === "doctor" ? "/doctor-dashboard" : "/dashboard");
       } catch (e: any) {
         console.error("HashPack Auth callback error:", e);
         setError(e?.message || "Failed to complete wallet setup.");

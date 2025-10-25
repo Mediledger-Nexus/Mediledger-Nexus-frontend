@@ -136,15 +136,17 @@ export function AuthFlow() {
         network: network
       };
 
+      console.log('AuthFlow - Creating session with data:', sessionData);
       const token = await createSession(sessionData);
-      console.log('Session created with DID');
+      console.log('AuthFlow - Session created successfully, token:', token);
 
       setCurrentStep('complete');
-      
+
       // Redirect to appropriate dashboard after a short delay
       setTimeout(() => {
+        console.log('AuthFlow - Redirecting to dashboard for role:', userData.role);
         if (userData.role === 'doctor') {
-          router.push('/doctor');
+          router.push('/doctor-dashboard');
         } else {
           router.push('/dashboard');
         }

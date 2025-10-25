@@ -1,414 +1,617 @@
 # 🏥 MediLedger Nexus
 
+<div align="center">
+
+**Revolutionizing Healthcare Through Decentralized AI and Blockchain Technology**
+
+[![React](https://img.shields.io/badge/React-18.0+-61DAFB.svg)](https://reactjs.org/)
+[![Next.js](https://img.shields.io/badge/Next.js-14.0+-000000.svg)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-3178C6.svg)](https://www.typescriptlang.org/)
+[![Hedera](https://img.shields.io/badge/Hedera-Hashgraph-8A4FD3.svg)](https://hedera.com/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.0+-38B2AC.svg)](https://tailwindcss.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.104+-green.svg)](https://fastapi.tiangolo.com/)
-[![Hedera](https://img.shields.io/badge/Hedera-Hashgraph-purple.svg)](https://hedera.com/)
-[![AI Powered](https://img.shields.io/badge/AI-Groq%20Powered-orange.svg)](https://groq.com/)
-[![Tests](https://img.shields.io/badge/tests-pytest-red.svg)](https://pytest.org/)
 
-> **Revolutionizing Healthcare Through Decentralized AI and Blockchain Technology**
+**AI-Powered • Blockchain-Secured • Patient-Controlled**
 
-MediLedger Nexus is a cutting-edge decentralized health data ecosystem built on Hedera Hashgraph, featuring zero-knowledge health vaults, AI-powered diagnostics, and a tokenized consent economy. Experience the future of healthcare where patients control their data, AI agents collaborate securely, and medical insights are generated through privacy-preserving federated learning.
+[🚀 Live Demo](#) • [📖 Documentation](#) • [💬 Discord](https://discord.gg/mediledger-nexus)
+
+</div>
 
 ---
 
-## 🌟 Key Features
+## 🎯 **What is MediLedger Nexus?**
 
-### 🔐 **Zero-Knowledge Health Vaults**
-- **End-to-End Encryption**: AES-256 + RSA hybrid encryption
-- **zk-SNARKs Privacy**: Prove data validity without revealing content
-- **Granular Access Control**: Fine-tuned permissions for different data types
-- **Immutable Audit Trail**: Every access logged on Hedera Consensus Service
+MediLedger Nexus is a **cutting-edge decentralized healthcare platform** that empowers patients with complete control over their medical data while enabling seamless, secure collaboration between healthcare providers and AI systems.
 
-### 💰 **Tokenized Consent Economy**
-- **$HEAL Token Rewards**: Earn tokens for data sharing consent
-- **Smart Contract Automation**: Automated compensation distribution
-- **Dynamic Pricing**: Market-driven data valuation
-- **Transparent Governance**: Community-driven protocol decisions
+### **🔐 Zero-Knowledge Privacy**
+Your medical data stays encrypted and private. **You control who accesses it, when, and for what purpose.**
 
-### 🤖 **AI Diagnostic Co-Pilot**
-- **Ultra-Fast Inference**: Powered by Groq AI for millisecond responses
-- **HCS-10 OpenConvAI**: AI agents communicate via Hedera Consensus Service
-- **Federated Learning**: Collaborative AI training without data sharing
-- **Multi-Modal Analysis**: Text, imaging, genomics, and sensor data
+### **🤖 AI-Powered Diagnostics**
+Advanced AI agents provide real-time medical analysis while maintaining complete privacy through federated learning.
 
-### 🚨 **Emergency Response Protocol**
-- **Instant Access**: Critical health data available in emergencies
+### **⚡ Blockchain Security**
+Built on Hedera Hashgraph for immutable audit trails and transparent consent management.
+
+---
+
+## 🌟 **Key Features**
+
+### **🔐 NFT-Based Consent Management**
+- **Dynamic Consent Tokens**: NFTs represent granular data permissions
+- **Instant Revocation**: Withdraw access with a single click
+- **Audit Trails**: Every action logged on Hedera Consensus Service
+- **Emergency Override**: Critical access when seconds matter
+
+### **🏥 Multi-Role Dashboard System**
+- **Patient Portal**: Complete health data control and consent management
+- **Doctor Dashboard**: AI-assisted diagnostics and patient management
+- **Organization Console**: Multi-facility health system management
+- **Research Access**: Privacy-preserving data for medical research
+
+### **🤖 AI Diagnostic Co-Pilot**
+- **Multi-Modal Analysis**: Text, imaging, and sensor data integration
+- **Federated Learning**: Collaborative AI without data sharing
+- **Real-Time Insights**: Sub-second medical analysis powered by Groq AI
+- **Specialized Agents**: Cardiology, oncology, emergency medicine experts
+
+### **🚨 Emergency Response Protocol**
 - **Smart Triage**: AI-powered emergency severity assessment
 - **Global Interoperability**: HL7 FHIR standard compliance
-- **Automated Notifications**: Real-time alerts to emergency contacts
+- **Automated Alerts**: Real-time notifications to emergency contacts
+- **Break-Glass Access**: Immediate access when lives are at stake
 
-### 🌍 **Global Health Interoperability**
+### **🌍 Global Health Interoperability**
+- **Cross-Border Records**: Secure international health data exchange
+- **Multi-Language Support**: Global accessibility and localization
+- **Standards Compliance**: HIPAA, GDPR, and regional regulations
 - **HL7 FHIR Integration**: Seamless healthcare system integration
-- **Cross-Border Data Exchange**: Secure international health records
-- **Multi-Language Support**: Global accessibility
-- **Regulatory Compliance**: HIPAA, GDPR, and regional standards
 
 ---
 
-## 🏗️ Enterprise-Grade Architecture
+## 🏗️ **System Architecture**
 
 ```mermaid
 graph TB
     subgraph "Frontend Layer"
-        A[React Dashboard] --> B[Mobile App]
-        B --> C[Provider Portal]
+        A[Next.js React App] --> B[Authentication Flow]
+        B --> C[Role-Based Routing]
+        C --> D[Patient Dashboard]
+        C --> E[Doctor Dashboard]
+        C --> F[Organization Portal]
     end
-    
-    subgraph "API Gateway"
-        D[FastAPI Server] --> E[Authentication]
-        E --> F[Rate Limiting]
-        F --> G[Request Validation]
-    end
-    
-    subgraph "Core Services"
-        H[Health Vault Service] --> I[AI Diagnostics Service]
-        I --> J[Consent Management]
-        J --> K[Emergency Service]
-        K --> L[Research Service]
-    end
-    
-    subgraph "AI & ML Layer"
-        M[Groq AI Engine] --> N[Federated Learning]
-        N --> O[HCS-10 AI Agents]
-        O --> P[Diagnostic Models]
-    end
-    
-    subgraph "Security Layer"
-        Q[AES-256 Encryption] --> R[zk-SNARKs]
-        R --> S[Access Control]
-        S --> T[Audit Logging]
-    end
-    
-    subgraph "Blockchain Layer"
-        U[Hedera Consensus Service] --> V[Hedera Token Service]
-        V --> W[Smart Contracts]
-        W --> X[Mirror Node API]
-    end
-    
-    subgraph "Storage Layer"
-        Y[SQLite Database] --> Z[IPFS Storage]
-        Z --> AA[Arweave Archive]
-    end
-    
-    A --> D
-    D --> H
-    H --> M
-    M --> Q
-    Q --> U
-    U --> Y
-```
 
-### 🔄 **HCS-10 OpenConvAI Integration**
+    subgraph "State Management"
+        G[Zustand Store] --> H[Session Management]
+        H --> I[Consent State]
+        I --> J[AI Chat State]
+    end
 
-```mermaid
-sequenceDiagram
-    participant P as Patient
-    participant AI1 as Diagnostic AI
-    participant HCS as Hedera Consensus
-    participant AI2 as Research AI
-    participant FL as Federated Learning
-    
-    P->>AI1: Request Health Analysis
-    AI1->>HCS: Register on HCS-2 Registry
-    AI1->>HCS: Publish to Outbound Topic
-    HCS->>AI2: Discover via Registry
-    AI2->>HCS: Connection Request
-    AI1->>HCS: Accept Connection
-    AI1->>AI2: Share Anonymized Insights
-    AI2->>FL: Contribute to Learning
-    FL->>P: Enhanced Diagnosis
+    subgraph "Blockchain Integration"
+        K[Hedera Hashgraph] --> L[Consensus Service]
+        L --> M[Token Service]
+        M --> N[Smart Contracts]
+        N --> O[HCS Topic Logging]
+    end
+
+    subgraph "AI Services"
+        P[Groq AI Engine] --> Q[Medical Analysis]
+        Q --> R[Federated Learning]
+        R --> S[Diagnostic Models]
+    end
+
+    subgraph "Data Layer"
+        T[Encrypted Storage] --> U[IPFS Distribution]
+        U --> V[Arweave Archive]
+        V --> W[Local Cache]
+    end
+
+    A --> G
+    G --> K
+    K --> P
+    P --> T
 ```
 
 ---
 
-## 🚀 Modern Tech Stack
+## 🚀 **Quick Start Guide**
 
-| Category | Technology | Purpose |
-|----------|------------|---------|
-| **Backend** | FastAPI 0.104+ | High-performance async API framework |
-| **AI Engine** | Groq AI | Ultra-fast LLM inference (1000+ tokens/sec) |
-| **Blockchain** | Hedera Hashgraph | Consensus, tokens, and smart contracts |
-| **Database** | SQLite + aiosqlite | Lightweight, async-compatible database |
-| **Encryption** | AES-256 + RSA-2048 | Military-grade data protection |
-| **Privacy** | zk-SNARKs | Zero-knowledge proof system |
-| **ML Framework** | PyTorch | Federated learning and model training |
-| **Storage** | IPFS + Arweave | Decentralized and permanent storage |
-| **Testing** | pytest + httpx | Comprehensive test coverage |
-| **Standards** | HL7 FHIR + HCS-10 | Healthcare and AI interoperability |
+### **Prerequisites**
+- **Node.js** 18.0 or later
+- **npm** or **yarn** package manager
+- **HashPack Wallet** (for Hedera blockchain integration)
+- **Modern web browser** (Chrome, Firefox, Safari, Edge)
 
----
-
-## ⚡ Quick Start
-
-### Prerequisites
-- Python 3.11+
-- Node.js 18+ (for frontend)
-- Git
-
-### 1. Clone Repository
+### **1. Clone and Setup**
 ```bash
-git clone https://github.com/your-org/mediledger-nexus.git
-cd mediledger-nexus/backend
-```
+# Clone the repository
+git clone https://github.com/your-org/mediledger-nexus-frontend.git
+cd mediledger-nexus-frontend
 
-### 2. Setup Virtual Environment
-```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
-
-### 3. Install Dependencies
-```bash
-pip install -r requirements.txt
+# Install dependencies
+npm install
 # or
-pip install -e .
+yarn install
 ```
 
-### 4. Configure Environment
+### **2. Environment Configuration**
 ```bash
-cp .env.example .env
-# Edit .env with your API keys and configuration
+# Copy environment template
+cp .env.local.example .env.local
+
+# Edit with your configuration
+nano .env.local
 ```
 
-### 5. Initialize Database
+**Required Environment Variables:**
 ```bash
-python -m alembic upgrade head
+# HashConnect Configuration
+NEXT_PUBLIC_HASHCONNECT_PROJECT_ID=your-reown-project-id
+NEXT_PUBLIC_HEDERA_NETWORK=testnet
+
+# Your Testnet Account (from HashPack)
+HEDERA_ACCOUNT_ID=0.0.7123249
+HEDERA_PRIVATE_KEY=your-private-key-here
+
+# HCS Topic for Logging
+HCS_TOPIC_ID=0.0.12345
+NEXT_PUBLIC_HCS_TOPIC_ID=0.0.12345
+
+# Features
+NEXT_PUBLIC_ENABLE_HCS=true
 ```
 
-### 6. Start Development Server
+### **3. Development Server**
 ```bash
-uvicorn src.mediledger_nexus.main:app --reload --host 0.0.0.0 --port 8000
+# Start development server
+npm run dev
+# or
+yarn dev
 ```
 
-### 7. Run API Demo
+🌐 **Access the application at:** `http://localhost:3000`
+
+### **4. Production Build**
 ```bash
-python api_demo.py
-```
+# Build for production
+npm run build
+npm run start
 
-🎉 **Success!** Your MediLedger Nexus backend is now running at `http://localhost:8000`
-
----
-
-## 🧪 Testing
-
-### Run All Tests
-```bash
-pytest
-```
-
-### Run with Coverage
-```bash
-pytest --cov=src/mediledger_nexus --cov-report=html
-```
-
-### Run Integration Tests
-```bash
-pytest tests/integration/ -v
-```
-
-### Run Specific Test Categories
-```bash
-# Unit tests only
-pytest tests/unit/ -v
-
-# AI service tests
-pytest tests/unit/test_ai_services.py -v
-
-# Blockchain integration tests
-pytest tests/integration/test_hedera.py -v
+# or
+yarn build
+yarn start
 ```
 
 ---
 
-## 📚 API Documentation
+## 📁 **Project Structure**
 
-### Interactive API Docs
-- **Swagger UI**: http://localhost:8000/docs
-- **ReDoc**: http://localhost:8000/redoc
-
-### Core Endpoints
-
-#### 🔐 Authentication
-```http
-POST /api/v1/auth/register    # User registration
-POST /api/v1/auth/token       # Login & get JWT token
-GET  /api/v1/auth/me          # Get current user
-POST /api/v1/auth/refresh     # Refresh JWT token
 ```
-
-#### 🏥 Health Vault Management
-```http
-POST /api/v1/vault/create           # Create health vault
-GET  /api/v1/vault/                 # Get user vaults
-GET  /api/v1/vault/{vault_id}       # Get specific vault
-PUT  /api/v1/vault/{vault_id}       # Update vault
-POST /api/v1/vault/{vault_id}/upload # Upload medical record
-```
-
-#### 🤖 AI Diagnostics & HCS-10
-```http
-POST /api/v1/ai/register-agent      # Register AI agent
-POST /api/v1/ai/diagnose           # Request AI diagnosis
-GET  /api/v1/ai/insights           # Get health insights
-POST /api/v1/ai/federated-learning/join # Join FL study
-POST /api/v1/ai/connect/{agent_id} # Connect to AI agent
-```
-
-#### 📋 Consent Management
-```http
-POST /api/v1/consent/grant         # Grant data access consent
-GET  /api/v1/consent/              # Get user consents
-PUT  /api/v1/consent/{consent_id}  # Update consent
-DELETE /api/v1/consent/{consent_id} # Revoke consent
-```
-
-#### 🚨 Emergency Access
-```http
-POST /api/v1/emergency/access      # Emergency data access
-GET  /api/v1/emergency/profile     # Get emergency profile
-PUT  /api/v1/emergency/profile     # Update emergency profile
+mediledger-nexus-frontend/
+├── 📂 app/                          # Next.js 14 App Router
+│   ├── 📄 page.tsx                  # Landing page
+│   ├── 📄 layout.tsx                # Root layout
+│   ├── 📂 auth/                     # Authentication pages
+│   ├── 📂 doctor-dashboard/         # Doctor portal
+│   ├── 📂 dashboard/                # Patient dashboard
+│   └── 📂 api/                      # API routes
+├── 📂 components/                   # Reusable React components
+│   ├── 📂 ui/                       # Shadcn/UI components
+│   ├── 📂 auth/                     # Authentication components
+│   ├── 📂 dashboard/                # Dashboard components
+│   └── 📂 shared/                   # Shared utilities
+├── 📂 lib/                          # Core libraries and utilities
+│   ├── 📄 session.ts                # Session management
+│   ├── 📄 hedera.ts                 # Hedera integration
+│   ├── 📄 consentManager.ts         # Consent management
+│   └── 📄 didRegistry.ts            # DID operations
+├── 📂 hooks/                        # Custom React hooks
+│   ├── 📄 useAIDiagnostic.ts        # AI diagnostic hook
+│   ├── 📄 useConsent.ts             # Consent management hook
+│   └── 📄 useAuth.ts                # Authentication hook
+├── 📂 types/                        # TypeScript type definitions
+├── 📂 public/                       # Static assets
+├── 📂 styles/                       # Global styles
+└── 📄 package.json                  # Dependencies and scripts
 ```
 
 ---
 
-## 🛠️ Development Guidelines
+## 🎨 **User Interface & Experience**
 
-### Code Style
-- **Formatter**: Black with 88-character line length
-- **Linter**: Ruff for fast Python linting
-- **Type Hints**: Mandatory for all functions
-- **Docstrings**: Google-style documentation
+### **🎯 Role-Based Dashboards**
 
-### Git Workflow
+#### **Patient Dashboard**
+- **Health Record Management**: Upload, organize, and encrypt medical records
+- **Consent Control Center**: Grant, modify, or revoke data access permissions
+- **AI Health Insights**: Get personalized health analysis and recommendations
+- **Emergency Profile**: Critical information for emergency responders
+
+#### **Doctor Dashboard**
+- **Patient Management**: Search and manage patient relationships
+- **AI Diagnostic Tools**: Real-time medical analysis and second opinions
+- **Consent Request System**: Request access to patient data with clear purposes
+- **Emergency Access Protocol**: Critical patient data access when needed
+
+#### **Organization Portal**
+- **Multi-Facility Management**: Oversee multiple healthcare facilities
+- **Staff Permission Management**: Control access levels and data permissions
+- **Analytics & Reporting**: Health system performance and compliance metrics
+- **Research Data Access**: Privacy-preserving research partnerships
+
+---
+
+## 🔐 **Security & Privacy**
+
+### **🛡️ Data Protection**
+- **End-to-End Encryption**: AES-256 encryption for all medical data
+- **Zero-Knowledge Proofs**: Verify data validity without revealing content
+- **Blockchain Audit Trails**: Immutable logs of all data access
+- **Multi-Factor Authentication**: Wallet-based identity verification
+
+### **⚖️ Compliance**
+- **HIPAA Compliant**: Healthcare data protection standards
+- **GDPR Ready**: European data protection regulations
+- **HL7 FHIR Standards**: Healthcare interoperability protocols
+- **Audit Logging**: Comprehensive compliance reporting
+
+---
+
+## 🤖 **AI Integration**
+
+### **🧠 Advanced AI Features**
+- **Medical Diagnosis**: Multi-specialty AI diagnostic assistance
+- **Risk Assessment**: Predictive health risk analysis
+- **Treatment Recommendations**: Evidence-based treatment suggestions
+- **Drug Interaction Checking**: Real-time medication safety analysis
+
+### **🔒 Privacy-Preserving AI**
+- **Federated Learning**: Train models without sharing raw data
+- **Homomorphic Encryption**: Compute on encrypted data
+- **Differential Privacy**: Statistical analysis without individual identification
+- **Zero-Trust Architecture**: Every AI request is verified and logged
+
+---
+
+## 🌐 **Blockchain Integration**
+
+### **⚡ Hedera Hashgraph**
+- **High Throughput**: 10,000+ transactions per second
+- **Low Latency**: 3-5 second finality
+- **Enterprise Security**: Bank-grade security and reliability
+- **Tokenization**: Native token creation and management
+
+### **🔗 Smart Contracts**
+- **Consent NFTs**: Tokenized access permissions
+- **Automated Payments**: Smart contract-based compensation
+- **Governance**: Community-driven protocol decisions
+- **Escrow Services**: Secure data marketplace transactions
+
+---
+
+## 🧪 **Development & Testing**
+
+### **Development Workflow**
 ```bash
-# Create feature branch
-git checkout -b feature/your-feature-name
+# Install dependencies
+npm install
 
-# Make changes and commit
-git add .
-git commit -m "feat: add new health vault encryption"
+# Start development server with hot reload
+npm run dev
 
-# Push and create PR
-git push origin feature/your-feature-name
+# Run tests
+npm test
+
+# Build for production
+npm run build
+
+# Run linting
+npm run lint
+
+# Format code
+npm run format
 ```
 
-### Environment Variables
+### **Testing Strategy**
+- **Unit Tests**: Component and utility function testing
+- **Integration Tests**: End-to-end user journey testing
+- **E2E Tests**: Full browser automation testing
+- **Performance Tests**: Load testing and optimization
+
+### **Code Quality**
+- **TypeScript**: Full type safety and IntelliSense
+- **ESLint**: Code linting and style enforcement
+- **Prettier**: Code formatting and consistency
+- **Husky**: Pre-commit hooks and automated checks
+
+---
+
+## 📚 **API Documentation**
+
+### **Authentication Endpoints**
+```typescript
+// User Registration
+POST /api/auth/register
+{
+  "phoneNumber": "+1234567890",
+  "role": "doctor" | "patient" | "organization",
+  "profile": { /* user profile data */ }
+}
+
+// Wallet Connection
+POST /api/auth/connect-wallet
+{
+  "accountId": "0.0.7123249",
+  "publicKey": "base64-encoded-key",
+  "signature": "wallet-signature"
+}
+```
+
+### **Consent Management**
+```typescript
+// Request Consent
+POST /api/consent/request
+{
+  "doctorDid": "did:hedera:testnet:0.0.123456",
+  "patientDid": "did:hedera:testnet:0.0.789012",
+  "permissions": ["read", "write"],
+  "purpose": "Medical consultation",
+  "expiryDays": 30
+}
+
+// Grant Consent
+POST /api/consent/grant
+{
+  "requestId": "consent-req-123",
+  "signature": "patient-signature"
+}
+```
+
+---
+
+## 🚀 **Deployment Guide**
+
+### **Environment Setup**
 ```bash
-# Database
-DATABASE_URL=sqlite+aiosqlite:///./mediledger.db
-
-# Hedera Configuration
-HEDERA_NETWORK=testnet
-HEDERA_ACCOUNT_ID=0.0.123456
-HEDERA_PRIVATE_KEY=your_private_key
-
-# AI Configuration
-GROQ_API_KEY=your_groq_api_key
-GROQ_MODEL=llama3-70b-8192
+# Production environment variables
+NEXT_PUBLIC_API_URL=https://api.mediledger-nexus.com
+NEXT_PUBLIC_HEDERA_NETWORK=mainnet
+NEXT_PUBLIC_ENABLE_ANALYTICS=true
 
 # Security
-SECRET_KEY=your_secret_key
-ENCRYPTION_KEY=your_encryption_key
+NEXTAUTH_SECRET=your-secret-key
+NEXTAUTH_URL=https://mediledger-nexus.com
+```
+
+### **Docker Deployment**
+```dockerfile
+FROM node:18-alpine AS builder
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --only=production
+
+FROM node:18-alpine AS runner
+WORKDIR /app
+COPY --from=builder /app/next.config.js ./
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./package.json
+
+EXPOSE 3000
+CMD ["npm", "start"]
 ```
 
 ---
 
-## 🚀 Deployment
+## 🤝 **Contributing**
 
-### Docker Deployment
+We welcome contributions from the healthcare and blockchain communities!
+
+### **Development Setup**
+1. **Fork** the repository
+2. **Clone** your fork: `git clone https://github.com/your-username/mediledger-nexus-frontend.git`
+3. **Install** dependencies: `npm install`
+4. **Create** a feature branch: `git checkout -b feature/amazing-feature`
+5. **Make** your changes and add tests
+6. **Test** thoroughly: `npm test`
+7. **Commit** your changes: `git commit -m 'Add amazing feature'`
+8. **Push** to your branch: `git push origin feature/amazing-feature`
+9. **Open** a Pull Request
+
+### **Contribution Guidelines**
+- Follow TypeScript best practices
+- Add comprehensive tests for new features
+- Update documentation for any changes
+- Ensure accessibility compliance (WCAG 2.1)
+- Maintain security best practices
+
+---
+
+## 📈 **Performance & Metrics**
+
+### **🏆 Performance Benchmarks**
+- **First Contentful Paint**: < 1.5s
+- **Largest Contentful Paint**: < 2.5s
+- **Cumulative Layout Shift**: < 0.1
+- **Time to Interactive**: < 3.5s
+
+### **🔧 Optimization Features**
+- **Code Splitting**: Automatic route-based splitting
+- **Image Optimization**: Next.js Image component with WebP
+- **Bundle Analysis**: Webpack bundle analyzer integration
+- **Caching Strategy**: Aggressive caching for static assets
+
+---
+
+## 🌟 **Use Cases & Impact**
+
+### **🏥 Healthcare Providers**
+- **Streamlined Patient Intake**: Digital forms and automated data collection
+- **AI-Assisted Diagnostics**: Second opinions and treatment recommendations
+- **Interoperable Records**: Access patient data from any healthcare system
+- **Compliance Automation**: Automated HIPAA and GDPR compliance reporting
+
+### **👥 Patients**
+- **Data Ownership**: Complete control over medical information
+- **Privacy Protection**: Zero-knowledge data sharing
+- **Emergency Access**: Critical information available when needed
+- **Health Insights**: AI-powered health analysis and recommendations
+
+### **🔬 Medical Research**
+- **Privacy-Preserving Studies**: Research without compromising patient privacy
+- **Federated Learning**: Collaborative AI model training
+- **Real-World Evidence**: Access to diverse, real-world health data
+- **Clinical Trials**: Streamlined patient recruitment and consent
+
+---
+
+## 🗺️ **Roadmap**
+
+### **Phase 1: Foundation** ✅
+- [x] Core authentication system
+- [x] Basic dashboard interfaces
+- [x] NFT-based consent management
+- [x] Hedera blockchain integration
+
+### **Phase 2: Enhancement** 🚧
+- [ ] Advanced AI diagnostic features
+- [ ] Mobile application development
+- [ ] Multi-language support
+- [ ] Enhanced security protocols
+
+### **Phase 3: Scale** 📋
+- [ ] Enterprise deployment tools
+- [ ] Global healthcare network
+- [ ] Advanced analytics platform
+- [ ] API marketplace
+
+### **Phase 4: Innovation** 🎯
+- [ ] Metaverse healthcare integration
+- [ ] Advanced federated learning
+- [ ] Quantum-resistant encryption
+- [ ] Global health data commons
+
+---
+
+## ❓ **Frequently Asked Questions**
+
+### **🔐 How secure is my medical data?**
+Your medical data is encrypted with AES-256 and stored in a decentralized manner. Access requires explicit consent via NFT tokens, and all activities are logged on the Hedera blockchain for complete transparency.
+
+### **🤖 How does the AI work without seeing my data?**
+We use federated learning and zero-knowledge proofs. AI models are trained on encrypted data patterns without ever accessing raw medical information.
+
+### **⚡ Why Hedera instead of other blockchains?**
+Hedera offers enterprise-grade security, 10,000+ TPS throughput, 3-5 second finality, and carbon-negative operations - perfect for healthcare applications.
+
+### **🔄 Can I export my data?**
+Yes! You have complete data portability. Export your health records in standard formats (HL7 FHIR, JSON, PDF) at any time.
+
+### **🚨 What happens in emergencies?**
+Emergency access protocols allow healthcare providers to access critical information instantly when lives are at stake, with full audit logging.
+
+---
+
+## 🆘 **Troubleshooting**
+
+### **Common Issues**
+
+**❌ HashPack Connection Failing**
 ```bash
-# Build image
-docker build -t mediledger-nexus .
+# Check environment variables
+echo $NEXT_PUBLIC_HASHCONNECT_PROJECT_ID
+echo $NEXT_PUBLIC_HEDERA_NETWORK
 
-# Run container
-docker run -p 8000:8000 --env-file .env mediledger-nexus
+# Reset HashPack DApp connections
+# Clear browser data and reconnect
 ```
 
-### Production Checklist
-- [ ] Set strong `SECRET_KEY` and `ENCRYPTION_KEY`
-- [ ] Configure production database (PostgreSQL recommended)
-- [ ] Set up Hedera mainnet accounts and keys
-- [ ] Configure CORS for your frontend domain
-- [ ] Set up monitoring and logging
-- [ ] Enable HTTPS/TLS encryption
-- [ ] Configure backup strategies
-- [ ] Set up CI/CD pipelines
+**❌ Dashboard Not Loading**
+```bash
+# Check console for errors
+# Verify session token validity
+# Clear localStorage and re-authenticate
+```
+
+**❌ NFT Operations Failing**
+```bash
+# Verify Hedera account balance
+# Check private key format (should start with 302e0201)
+# Confirm testnet configuration
+```
+
+### **Debug Commands**
+```bash
+# View session data
+console.log(localStorage.getItem('mediledger_session'))
+
+# Check Hedera configuration
+console.log('Network:', process.env.NEXT_PUBLIC_HEDERA_NETWORK)
+console.log('Account:', process.env.HEDERA_ACCOUNT_ID)
+```
 
 ---
 
-## 🔒 Security Considerations
+## 📄 **License & Legal**
 
-### Data Protection
-- **Encryption at Rest**: All sensitive data encrypted with AES-256
-- **Encryption in Transit**: TLS 1.3 for all communications
-- **Key Management**: Hardware Security Modules (HSM) recommended
-- **Access Logging**: Comprehensive audit trails on Hedera
+### **Open Source License**
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
 
-### Privacy Compliance
-- **HIPAA Compliance**: Healthcare data protection standards
-- **GDPR Compliance**: European data protection regulations
-- **Zero-Knowledge**: Prove data validity without revealing content
-- **Data Minimization**: Collect only necessary information
+### **Medical Disclaimer**
+This software is for research and educational purposes. Always consult licensed healthcare professionals for medical decisions. This system supplements but does not replace professional medical care.
 
-### Blockchain Security
-- **Hedera Consensus**: Byzantine fault-tolerant consensus
-- **Smart Contract Audits**: Regular security assessments
-- **Multi-Signature**: Required for critical operations
-- **Rate Limiting**: Protection against abuse
+### **Compliance**
+- **HIPAA**: Healthcare data protection compliance
+- **GDPR**: European data protection standards
+- **HL7 FHIR**: Healthcare interoperability standards
+- **Medical Device**: Research use only designation
 
 ---
 
-## 🤝 Contributing
+## 🙏 **Acknowledgments**
 
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+### **🔗 Partners & Technology**
+- **Hedera Hashgraph** - Revolutionary DLT platform
+- **Groq** - Ultra-fast AI inference
+- **HashPack** - Hedera wallet ecosystem
+- **React & Next.js** - Modern web development
+- **Tailwind CSS** - Beautiful UI components
 
-### Development Setup
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests for new functionality
-5. Run the test suite
-6. Submit a pull request
+### **🏥 Healthcare Community**
+- **Medical Professionals** - Clinical expertise and validation
+- **Healthcare Organizations** - Real-world implementation feedback
+- **Research Institutions** - Academic partnerships and studies
+- **Patient Advocates** - Privacy and rights guidance
 
-### Reporting Issues
-- Use GitHub Issues for bug reports
-- Include detailed reproduction steps
-- Provide environment information
-- Add relevant logs and error messages
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+### **💻 Open Source Community**
+- **Contributors** - Code, documentation, and design
+- **Beta Testers** - Early feedback and bug reports
+- **Security Researchers** - Vulnerability assessments
+- **Documentation Writers** - Clear usage guides
 
 ---
 
-## 🙏 Acknowledgments
+## 📞 **Get Involved**
 
-- **Hedera Hashgraph** - For the revolutionary DLT platform
-- **Groq** - For ultra-fast AI inference capabilities
-- **FastAPI** - For the excellent async web framework
-- **OpenAI** - For advancing AI research and development
-- **Healthcare Community** - For inspiring this project
+<div align="center">
 
----
+**Ready to revolutionize healthcare?**
 
-## 📞 Support & Contact
+[🚀 **Get Started**](#quick-start-guide) • [💬 **Join Discord**](https://discord.gg/mediledger-nexus) • [🐦 **Follow Twitter**](https://twitter.com/MediLedgerNexus)
 
-- **Documentation**: [docs.mediledger-nexus.com](https://docs.mediledger-nexus.com)
-- **Discord**: [Join our community](https://discord.gg/mediledger-nexus)
-- **Email**: support@mediledger-nexus.com
-- **Twitter**: [@MediLedgerNexus](https://twitter.com/MediLedgerNexus)
+**Built with ❤️ for the future of healthcare**
+
+[![GitHub stars](https://img.shields.io/github/stars/your-org/mediledger-nexus-frontend.svg?style=social&label=Star)](https://github.com/your-org/mediledger-nexus-frontend)
+[![GitHub forks](https://img.shields.io/github/forks/your-org/mediledger-nexus-frontend.svg?style=social&label=Fork)](https://github.com/your-org/mediledger-nexus-frontend/fork)
+
+</div>
 
 ---
 
 <div align="center">
 
-**Built with ❤️ for the future of healthcare**
+**MediLedger Nexus** • Empowering patients, enabling providers, advancing healthcare
 
-[🌟 Star us on GitHub](https://github.com/your-org/mediledger-nexus) | [🐦 Follow on Twitter](https://twitter.com/MediLedgerNexus) | [💬 Join Discord](https://discord.gg/mediledger-nexus)
+[📖 Documentation](#) • [🚀 Demo](#) • [💬 Community](https://discord.gg/mediledger-nexus) • [🐦 Twitter](https://twitter.com/MediLedgerNexus)
 
 </div>

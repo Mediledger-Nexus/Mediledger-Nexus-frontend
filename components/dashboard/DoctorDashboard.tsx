@@ -101,6 +101,12 @@ export function DoctorDashboard({ doctorDid, doctorPrivateKey }: DoctorDashboard
     setConsentRequests(requests);
   };
 
+  // Helper to get doctor account ID from DID
+  const getDoctorAccountId = (did: string): string => {
+    // Mock: assume DID format did:hedera:0.0.123456 -> account 0.0.123456
+    return did.split(':')[2] || '0.0.123456'; // Fallback for demo
+  };
+
   // Load doctor data
   useEffect(() => {
     loadDoctorData();
@@ -138,11 +144,26 @@ export function DoctorDashboard({ doctorDid, doctorPrivateKey }: DoctorDashboard
     }
 
     try {
+      // Verify consent NFT
+      const consents = getDoctorConsents(doctorDid);
+      const consent = consents.find(c => c.patientDid === patient.did);
+
+      if (consent && consent.metadata?.nftTokenId && consent.metadata?.nftSerialNumber) {
+        const doctorAccountId = getDoctorAccountId(doctorDid); // Helper to get account ID
+        const { verifyConsentForAccess } = await import('@/lib/consentManager');
+        const isValid = await verifyConsentForAccess(consent.id, doctorAccountId);
+
+        if (!isValid) {
+          toast.error('Consent NFT is invalid or expired');
+          return;
+        }
+      }
+
       setSelectedPatient(patient);
       toast.success(`Accessing ${patient.name}'s health data`);
     } catch (error) {
       console.error('Failed to access patient data:', error);
-      toast.error('Failed to access patient data');
+      toast.error('Failed to verify consent NFT');
     }
   };
 

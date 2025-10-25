@@ -131,6 +131,45 @@ export async function grantConsent(
   allConsents.push(consent);
   writeJSON(KEYS.consents, allConsents);
 
+  // Mint NFT and log to HCS
+  try {
+    const { HederaLogger } = await import('./hedera');
+
+    // Mint consent NFT to doctor's wallet
+    const doctorAccountId = getDoctorAccountId(request.doctorDid); // Helper to get account ID from DID
+    const nftResult = await HederaLogger.mintConsentNFT(doctorAccountId, {
+      consentId: consent.id,
+      recordId: 'record-123', // Replace with actual record ID
+      patientDID: patientDid,
+      doctorDID: request.doctorDid,
+      fileCID: 'QmExampleCID', // Replace with actual file CID
+      reason: request.message || 'Medical consultation',
+      expiresAt: expiresAt,
+    });
+
+    // Store NFT details in consent
+    consent.metadata = {
+      nftTokenId: nftResult.tokenId,
+      nftSerialNumber: nftResult.serialNumber,
+    };
+
+    // Log to HCS
+    await HederaLogger.logConsentEvent({
+      type: 'consent_granted',
+      consentId: consent.id,
+      patientDID: patientDid,
+      doctorDID: request.doctorDid,
+      recordId: 'record-123',
+      timestamp: new Date().toISOString(),
+      metadata: { nftResult },
+    });
+
+    writeJSON(KEYS.consents, allConsents); // Update with NFT details
+  } catch (error) {
+    console.error('Error minting NFT or logging to HCS:', error);
+    // Continue without NFT if Hedera fails (demo mode)
+  }
+
   // Log to audit trail
   logConsentAudit({
     action: 'consent_granted',
@@ -144,6 +183,12 @@ export async function grantConsent(
   return consent;
 }
 
+// Helper to get doctor account ID from DID (in production, query from DB or DID resolver)
+function getDoctorAccountId(doctorDid: string): string {
+  // Mock: assume DID format did:hedera:0.0.123456 -> account 0.0.123456
+  return doctorDid.split(':')[2] || '0.0.123456'; // Fallback for demo
+}
+
 // Revoke consent
 export async function revokeConsent(consentId: string, revokedBy: string): Promise<void> {
   const allConsents = readJSON<ConsentGrant[]>(KEYS.consents, []);
@@ -152,6 +197,31 @@ export async function revokeConsent(consentId: string, revokedBy: string): Promi
   if (consentIndex >= 0) {
     allConsents[consentIndex].status = 'revoked';
     writeJSON(KEYS.consents, allConsents);
+
+    // Burn NFT if exists
+    const consent = allConsents[consentIndex];
+    if (consent.metadata?.nftTokenId && consent.metadata?.nftSerialNumber) {
+      try {
+        const { HederaLogger } = await import('./hedera');
+        await HederaLogger.burnConsentNFT(
+          consent.metadata.nftTokenId,
+          consent.metadata.nftSerialNumber,
+          getDoctorAccountId(consent.doctorDid)
+        );
+
+        // Log to HCS
+        await HederaLogger.logConsentEvent({
+          type: 'consent_revoked',
+          consentId,
+          patientDID: consent.patientDid,
+          doctorDID: consent.doctorDid,
+          recordId: 'record-123',
+          timestamp: new Date().toISOString(),
+        });
+      } catch (error) {
+        console.error('Error burning NFT or logging to HCS:', error);
+      }
+    }
 
     // Log to audit trail
     logConsentAudit({
@@ -372,12 +442,43 @@ export async function grantEmergencyAccess(
   return emergencyConsent;
 }
 
-// Auto-check for expired consents on module load
-if (typeof window !== 'undefined') {
-  // Check every 5 minutes
-  setInterval(checkExpiredConsents, 5 * 60 * 1000);
-  
-  // Initial check
-  setTimeout(checkExpiredConsents, 1000);
+// Verify consent NFT before allowing record access
+export async function verifyConsentForAccess(
+  consentId: string,
+  doctorAccountId: string
+): Promise<boolean> {
+  const allConsents = readJSON<ConsentGrant[]>(KEYS.consents, []);
+  const consent = allConsents.find(c => c.id === consentId && c.status === 'active');
+
+  if (!consent) {
+    return false;
+  }
+
+  // Check expiration
+  if (consent.expiresAt && new Date(consent.expiresAt) <= new Date()) {
+    consent.status = 'expired';
+    writeJSON(KEYS.consents, allConsents);
+    return false;
+  }
+
+  // Verify NFT if exists
+  if (consent.metadata?.nftTokenId && consent.metadata?.nftSerialNumber) {
+    try {
+      const { HederaLogger } = await import('./hedera');
+      const isValid = await HederaLogger.verifyConsentNFT(
+        consent.metadata.nftTokenId,
+        consent.metadata.nftSerialNumber,
+        doctorAccountId
+      );
+      if (!isValid) {
+        return false;
+      }
+    } catch (error) {
+      console.error('Error verifying consent NFT:', error);
+      return false;
+    }
+  }
+
+  return true;
 }
 

@@ -12,6 +12,7 @@ export interface SessionData {
   provider?: string;
   network?: string;
   exp?: number;
+  role?: string;  // Added for role-based routing (patient, doctor, organization)
 }
 
 export class SessionManager {
