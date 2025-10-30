@@ -1,5 +1,6 @@
 // Advanced Consent Management System for MediLedger Nexus
 // Handles time-limited consent, verification, and HCS logging
+import { HederaLogger } from './hedera';
 
 export interface ConsentGrant {
   id: string;
@@ -29,6 +30,8 @@ export interface ConsentRequest {
   status: 'pending' | 'granted' | 'denied' | 'expired';
   message?: string;
   hcsSequence?: string;
+  hcsTransactionId?: string;
+  hashscanUrl?: string;
 }
 
 const KEYS = {
@@ -77,14 +80,51 @@ export async function createConsentRequest(
   writeJSON(KEYS.requests, allRequests);
 
   // Log to audit trail
-  logConsentAudit({
+  const auditData = {
     action: 'consent_request_created',
     requestId: request.id,
     doctorDid,
     patientDid,
     permissions: permissions.map(p => p.type),
     expiryDays,
-  });
+  };
+
+  logConsentAudit(auditData);
+  
+  // Log to Hedera HCS
+  try {
+    const transactionId = await HederaLogger.logConsentEvent({
+      type: 'consent_request_created',
+      consentId: request.id,
+      doctorDID: doctorDid,
+      patientDID: patientDid,
+      timestamp: new Date().toISOString(),
+      metadata: {
+        permissions: permissions.map(p => p.type),
+        expiryDays
+      }
+    });
+    
+    // Store both the transaction ID and the HashScan URL
+    request.hcsSequence = transactionId;
+    request.hcsTransactionId = transactionId;
+    
+    // Create a HashScan link if we have a valid transaction ID
+    if (transactionId && !transactionId.startsWith('hcs-')) {
+      const network = process.env.NEXT_PUBLIC_HEDERA_NETWORK || 'testnet';
+      request.hashscanUrl = `https://hashscan.io/${network}/transaction/${transactionId}`;
+    }
+    
+    // Update the request with HCS sequence
+    const allRequests = readJSON<ConsentRequest[]>(KEYS.requests, []);
+    const requestIndex = allRequests.findIndex(r => r.id === request.id);
+    if (requestIndex >= 0) {
+      allRequests[requestIndex] = request;
+      writeJSON(KEYS.requests, allRequests);
+    }
+  } catch (error) {
+    console.error('Failed to log consent request to HCS:', error);
+  }
 
   return request;
 }
@@ -127,6 +167,25 @@ export async function grantConsent(
   writeJSON(KEYS.requests, allRequests);
 
   // Store consent
+  // Log to Hedera HCS before saving
+  try {
+    const hcsSequence = await HederaLogger.logConsentEvent({
+      type: 'consent_granted',
+      consentId: consent.id,
+      doctorDID: consent.doctorDid,
+      patientDID: consent.patientDid,
+      timestamp: new Date().toISOString(),
+      metadata: {
+        permissions: consent.permissions.map(p => p.type),
+        grantedAt: consent.grantedAt,
+        expiresAt: consent.expiresAt
+      }
+    });
+    consent.hcsSequence = hcsSequence;
+  } catch (error) {
+    console.error('Failed to log consent grant to HCS:', error);
+  }
+
   const allConsents = readJSON<ConsentGrant[]>(KEYS.consents, []);
   allConsents.push(consent);
   writeJSON(KEYS.consents, allConsents);
@@ -367,7 +426,7 @@ function logConsentAudit(data: Record<string, any>) {
 }
 
 // Log to Hedera Consensus Service
-async function logToHCS(auditLog: AuditLog) {
+export async function logToHCS(auditLog: AuditLog) {
   try {
     // Import HederaLogger dynamically to avoid SSR issues
     const { HederaLogger } = await import('./hedera');
@@ -423,6 +482,26 @@ export async function grantEmergencyAccess(
     status: 'active',
     metadata: { emergency: true, reason },
   };
+
+  // Log to Hedera HCS
+  try {
+    const hcsSequence = await HederaLogger.logConsentEvent({
+      type: 'consent_granted',
+      consentId: emergencyConsent.id,
+      doctorDID: doctorDid,
+      patientDID: patientDid,
+      timestamp: new Date().toISOString(),
+      metadata: {
+        emergency: true,
+        reason,
+        duration,
+        expiresAt: emergencyConsent.expiresAt,
+      }
+    });
+    emergencyConsent.hcsSequence = hcsSequence;
+  } catch (error) {
+    console.error('Failed to log emergency access to HCS:', error);
+  }
 
   const allConsents = readJSON<ConsentGrant[]>(KEYS.consents, []);
   allConsents.push(emergencyConsent);

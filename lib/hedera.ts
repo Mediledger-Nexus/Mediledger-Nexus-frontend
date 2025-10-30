@@ -73,11 +73,11 @@ export interface ConsentNFTMetadata {
 }
 
 export interface ConsentEvent {
-  type: 'consent_granted' | 'consent_revoked' | 'consent_viewed';
+  type: 'consent_granted' | 'consent_revoked' | 'consent_viewed' | 'consent_request_created';
   consentId: string;
   patientDID: string;
   doctorDID: string;
-  recordId: string;
+  recordId?: string;
   timestamp: string;
   metadata?: Record<string, any>;
 }
@@ -131,7 +131,7 @@ export class HederaLogger {
       await associateTx.getReceipt(client);
 
       // Mint NFT with metadata
-      const metadataBytes = Buffer.from(JSON.stringify(metadata), 'utf8');
+      const metadataBytes = new Uint8Array(Buffer.from(JSON.stringify(metadata), 'utf8'));
       const mintTx = await new TokenMintTransaction()
         .setTokenId(tokenId)
         .setMetadata([metadataBytes])
@@ -211,6 +211,10 @@ export class HederaLogger {
         .setAccountId(doctorAccount)
         .execute(client);
 
+      if (!balance.tokens) {
+        return false;
+      }
+
       const nftBalance = balance.tokens.get(nftTokenId);
       if (!nftBalance) {
         return false;
@@ -228,7 +232,55 @@ export class HederaLogger {
    * Log a consent event to HCS
    */
   static async logConsentEvent(event: ConsentEvent): Promise<string> {
-    return await HederaLogger.logRegistration(event); // Reuse existing HCS logging
+    if (!ENABLE_HCS) {
+      return 'hcs-disabled';
+    }
+
+    // Browser: proxy to API
+    if (typeof window !== 'undefined') {
+      const origin = window.location.origin;
+      const resp = await fetch(`${origin}/api/hcs/log`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        cache: 'no-store',
+        body: JSON.stringify({ 
+          type: 'consent_event', 
+          event: {
+            ...event,
+            timestamp: new Date().toISOString()
+          }
+        }),
+      });
+      if (!resp.ok) {
+        console.warn('HCS logging failed, but operation will continue');
+        return 'hcs-error';
+      }
+      const data = await resp.json();
+      return data.transactionId || data.sequence || '';
+    }
+
+    // Server-side execution
+    if (!client) {
+      return 'demo-sequence-' + Date.now();
+    }
+
+    try {
+      const message = JSON.stringify(event);
+      const transaction = await new TopicMessageSubmitTransaction()
+        .setTopicId(TOPIC_ID)
+        .setMessage(message)
+        .execute(client);
+      
+      // Get both the transaction ID and receipt
+      const transactionId = transaction.transactionId.toString();
+      const receipt = await transaction.getReceipt(client);
+      
+      // Return the transaction ID which can be used to create a HashScan link
+      return transactionId;
+    } catch (error) {
+      console.error('Error logging consent event to HCS:', error);
+      throw error;
+    }
   }
 
   /**
@@ -354,6 +406,64 @@ export class HederaLogger {
       return receipt.topicSequenceNumber?.toString() || '';
     } catch (error) {
       console.error('Error logging login to HCS:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Register a DID on Hedera Consensus Service
+   */
+  static async logDIDRegistration(data: {
+    did: string;
+    accountId: string;
+    publicKey: string;
+    network: string;
+    timestamp: string;
+  }): Promise<string> {
+    if (!ENABLE_HCS) {
+      return 'hcs-disabled';
+    }
+
+    // Browser: proxy to API
+    if (typeof window !== 'undefined') {
+      const origin = window.location.origin;
+      const resp = await fetch(`${origin}/api/hcs/log`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        cache: 'no-store',
+        body: JSON.stringify({ 
+          type: 'did_registration', 
+          event: {
+            type: 'did_registration',
+            ...data,
+          }
+        }),
+      });
+      if (!resp.ok) {
+        console.warn('HCS logging not configured, but DID registration will proceed');
+        return 'hcs-unconfigured';
+      }
+      const responseData = await resp.json();
+      return responseData.sequence || responseData.transactionId || '';
+    }
+
+    if (!client) {
+      return 'demo-tx-' + Date.now();
+    }
+
+    try {
+      const message = JSON.stringify({
+        type: 'did_registration',
+        ...data,
+      });
+      const transaction = await new TopicMessageSubmitTransaction()
+        .setTopicId(TOPIC_ID)
+        .setMessage(message)
+        .execute(client);
+      const receipt = await transaction.getReceipt(client);
+      return receipt.topicSequenceNumber?.toString() || transaction.transactionId.toString();
+    } catch (error) {
+      console.error('Error logging DID registration to HCS:', error);
       throw error;
     }
   }

@@ -72,9 +72,13 @@ export function AuthFlow() {
   };
 
   const handleWalletSuccess = async (walletInfo: any) => {
-    console.log('Wallet connection successful:', walletInfo);
+    console.log('💰 AuthFlow - Wallet connection successful:', walletInfo);
+    console.log('💰 AuthFlow - Wallet account ID:', walletInfo.accountId);
+    console.log('💰 AuthFlow - Wallet public key:', walletInfo.publicKey);
+    console.log('💰 AuthFlow - Wallet type:', walletInfo.type);
+
     setUserData(prev => ({ ...prev, walletInfo }));
-    
+
     setLoading(true);
     try {
       // Log wallet linked event to HCS
@@ -86,7 +90,7 @@ export function AuthFlow() {
       };
 
       await HederaLogger.logRegistration(walletLinkEvent);
-      console.log('Wallet link logged to HCS');
+      console.log('✅ AuthFlow - Wallet link logged to HCS');
 
       // Log registration completion event to HCS
       const completionEvent = {
@@ -109,12 +113,12 @@ export function AuthFlow() {
       };
 
       await HederaLogger.logRegistration(completionEvent);
-      console.log('Registration completion logged to HCS');
+      console.log('✅ AuthFlow - Registration completion logged to HCS');
 
       // Create DID for the user
       const network = process.env.NEXT_PUBLIC_HEDERA_NETWORK || 'testnet';
       const publicKey = walletInfo.publicKey || 'demo-public-key';
-      
+
       const didDocument = await createDID(
         walletInfo.accountId,
         publicKey,
@@ -122,8 +126,8 @@ export function AuthFlow() {
         userData.profile,
         network
       );
-      
-      console.log('DID created:', didDocument.id);
+
+      console.log('🔗 AuthFlow - DID created:', didDocument.id);
 
       // Create session with DID
       const sessionData = {
@@ -136,15 +140,15 @@ export function AuthFlow() {
         network: network
       };
 
-      console.log('AuthFlow - Creating session with data:', sessionData);
+      console.log('📦 AuthFlow - Creating session with data:', sessionData);
       const token = await createSession(sessionData);
-      console.log('AuthFlow - Session created successfully, token:', token);
+      console.log('✅ AuthFlow - Session created successfully, token:', token?.substring(0, 50) + '...');
 
       setCurrentStep('complete');
 
       // Redirect to appropriate dashboard after a short delay
       setTimeout(() => {
-        console.log('AuthFlow - Redirecting to dashboard for role:', userData.role);
+        console.log('🚀 AuthFlow - Redirecting to dashboard for role:', userData.role);
         if (userData.role === 'doctor') {
           router.push('/doctor-dashboard');
         } else {
@@ -153,7 +157,7 @@ export function AuthFlow() {
       }, 2000);
 
     } catch (error) {
-      console.error('Error completing registration:', error);
+      console.error('❌ AuthFlow - Error completing registration:', error);
       setError('Failed to complete registration. Please try again.');
     } finally {
       setLoading(false);
@@ -243,18 +247,62 @@ export function AuthFlow() {
       )}
 
       {currentStep === 'complete' && (
-        <div className="min-h-screen bg-black text-white flex items-center justify-center">
-          <div className="text-center">
-            <div className="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
+        <div className="min-h-screen bg-black text-white flex items-center justify-center p-4">
+          <div className="max-w-2xl w-full">
+            <div className="text-center mb-8">
+              <div className="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <h2 className="text-3xl font-bold text-green-400 mb-2">
+                {userData.role === 'patient' ? 'Patient' : userData.role === 'doctor' ? 'Doctor' : 'Organization'} Registration Complete!
+              </h2>
+              <p className="text-gray-400 mb-4">Your account has been created and logged to the blockchain.</p>
             </div>
-            <h2 className="text-2xl font-bold text-green-400 mb-2">
-              {userData.role === 'patient' ? 'Patient' : userData.role === 'doctor' ? 'Doctor' : 'Organization'} Registration Complete!
-            </h2>
-            <p className="text-gray-400 mb-4">Your account has been created and logged to the blockchain.</p>
-            {loading && <p className="text-sm text-gray-500">Redirecting to dashboard...</p>}
+
+            {/* DID Registration Success Message */}
+            {userData.walletInfo?.did && (
+              <div className="bg-slate-900/50 border border-cyan-500/50 rounded-lg p-6 mb-6">
+                <div className="flex items-start gap-3 mb-4">
+                  <div className="w-6 h-6 bg-cyan-500/20 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                    <svg className="w-4 h-4 text-cyan-400" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-lg font-semibold text-cyan-400 mb-2">
+                      ✅ DID Successfully Registered on Hedera {(process.env.NEXT_PUBLIC_HEDERA_NETWORK || 'testnet').toUpperCase()}!
+                    </h3>
+                    <p className="text-gray-300 text-sm mb-3">
+                      Your Decentralized Identifier has been registered on the Hedera blockchain, proving your identity on-chain.
+                    </p>
+                    <div className="bg-slate-800/50 rounded p-3 mb-3">
+                      <p className="text-xs text-gray-400 mb-1">Your DID:</p>
+                      <p className="text-sm font-mono text-cyan-300 break-all">{userData.walletInfo.did}</p>
+                    </div>
+                    {sessionStorage.getItem('didRegistrationTx') && (() => {
+                      const txData = JSON.parse(sessionStorage.getItem('didRegistrationTx') || '{}');
+                      return (
+                        <a
+                          href={txData.hashScanUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 transition-colors text-sm"
+                        >
+                          <span>View transaction on HashScan</span>
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                          </svg>
+                        </a>
+                      );
+                    })()}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {loading && <p className="text-sm text-gray-500 text-center">Redirecting to dashboard...</p>}
           </div>
         </div>
       )}

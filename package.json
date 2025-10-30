@@ -6,7 +6,16 @@
     "build": "next build",
     "dev": "next dev",
     "lint": "next lint",
-    "start": "next start"
+    "start": "next start",
+    "deploy:hackathon": "node deploy-hackathon.js",
+    "verify:deployment": "node verify-deployment.js",
+    "deploy:testnet": "node generate-testnet.js",
+    "setup:mainnet": "node setup-mainnet.js",
+    "setup:testnet": "node setup-testnet.js",
+    "deploy:complete": "node deploy-complete.bat",
+    "build:hackathon": "npm run deploy:hackathon && npm run build",
+    "generate:proof": "node generate-hackathon-proof.js",
+    "test:blockchain": "node test-blockchain-integration.js"
   },
   "dependencies": {
     "@emotion/is-prop-valid": "latest",

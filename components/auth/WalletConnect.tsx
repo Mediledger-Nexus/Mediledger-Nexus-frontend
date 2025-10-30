@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Wallet, Smartphone, Plus, ArrowRight, Loader2, CheckCircle, AlertCircle } from "lucide-react";
 import { HederaLogger } from "@/lib/hedera";
+import { createDID } from "@/lib/didRegistry";
 import { LedgerId } from "@hashgraph/sdk";
 // Import HashConnect only on client to avoid SSR issues
 let HashConnect: any = null;
@@ -38,6 +39,34 @@ export function WalletConnect({ onSuccess, onError }: WalletConnectProps) {
       }
     };
     loadHashConnect();
+
+    // Catch unhandled promise rejections originating from HashConnect internals
+    const handleUnhandled = (event: PromiseRejectionEvent) => {
+      try {
+        const reason: any = event?.reason;
+        const message = typeof reason === 'string' ? reason : reason?.message || '';
+        if (message && (
+          message.includes('pairing') ||
+          message.includes('Record was recently deleted') ||
+          message.includes('No matching key') ||
+          message.toLowerCase().includes('proposal')
+        )) {
+          event.preventDefault?.();
+          console.warn('Intercepted HashConnect pairing error:', message);
+          setLoading(false);
+          setStep('choice');
+          onError('HashPack pairing issue detected. In HashPack → DApp Connections, remove this site, ensure the same network is selected, then reconnect.');
+        }
+      } catch {}
+    };
+    if (typeof window !== 'undefined') {
+      window.addEventListener('unhandledrejection', handleUnhandled);
+    }
+    return () => {
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('unhandledrejection', handleUnhandled);
+      }
+    };
   }, [onError]);
 
   const connectHashPack = async () => {
@@ -78,28 +107,94 @@ export function WalletConnect({ onSuccess, onError }: WalletConnectProps) {
       // Initialize HashConnect v3: new HashConnect(ledger, projectId, metadata, debug)
       const hashconnect: any = new HashConnect(ledger, projectId, appMetadata, true);
       hashconnectRef.current = hashconnect;
+      try {
+        (hashconnect as any).clearConnections?.();
+        (hashconnect as any).disconnect?.();
+      } catch {}
 
       // Register pairing event before init
-      hashconnect.pairingEvent.on((pairingData: any) => {
+      hashconnect.pairingEvent.on(async (pairingData: any) => {
         try {
+          console.log('🔗 WalletConnect - Pairing event received:', pairingData);
+
           const accounts: string[] = pairingData?.accountIds || pairingData?.metadata?.accountIds || [];
+          console.log('🔗 WalletConnect - Extracted accounts:', accounts);
+
           if (accounts.length > 0) {
+            const accountId = String(accounts[0] || '').trim();
+            const accountFormatOk = /^0\.0\.\d+$/.test(accountId);
+            const pairedNet = (pairingData?.network || pairingData?.metadata?.network || '').toLowerCase();
+            const envNet = (process.env.NEXT_PUBLIC_HEDERA_NETWORK || 'mainnet').toLowerCase();
+            if (!accountFormatOk) {
+              throw new Error('Invalid account format from HashPack');
+            }
+            if (pairedNet && envNet && pairedNet !== envNet) {
+              throw new Error(`Network mismatch: wallet=${pairedNet}, app=${envNet}`);
+            }
             // Extract public key from pairing data (HashConnect provides this)
             const publicKey = pairingData?.metadata?.publicKey ||
                              pairingData?.publicKey ||
                              pairingData?.accountPublicKey ||
                              'demo-public-key'; // Fallback for demo
 
+            console.log('🔗 WalletConnect - Extracted public key:', publicKey);
+            console.log('🔗 WalletConnect - Using account ID:', accountId);
+
+            // Generate DID from account ID
+            const did = `did:hedera:${envNet}:${accountId}`;
+            console.log('🔗 WalletConnect - Generated DID:', did);
+
+            // Register DID on Hedera
+            try {
+              console.log('🔗 WalletConnect - Registering DID on Hedera...');
+              const transactionId = await HederaLogger.logDIDRegistration({
+                did,
+                accountId,
+                publicKey,
+                network: envNet,
+                timestamp: new Date().toISOString(),
+              });
+
+              console.log('🔗 WalletConnect - DID registered with transaction ID:', transactionId);
+
+              // Create DID document in registry
+              await createDID(accountId, publicKey, 'patient', {
+                walletId: accountId,
+                connectedAt: new Date().toISOString(),
+              }, envNet);
+
+              console.log('🔗 WalletConnect - DID document created in registry');
+
+              // Show success message with HashScan link
+              const hashScanUrl = `https://hashscan.io/${envNet}/transaction/${transactionId}`;
+              console.log('🔗 WalletConnect - HashScan URL:', hashScanUrl);
+
+              // Store transaction info for display
+              if (typeof window !== 'undefined') {
+                sessionStorage.setItem('didRegistrationTx', JSON.stringify({
+                  transactionId,
+                  hashScanUrl,
+                  did,
+                  accountId,
+                }));
+              }
+            } catch (didError: any) {
+              console.warn('⚠️ WalletConnect - DID registration failed, but continuing with wallet connection:', didError);
+              // Continue with wallet connection even if DID registration fails
+            }
+
             onSuccess({
-              accountId: accounts[0],
+              accountId,
               publicKey: publicKey,
-              type: 'hashpack'
-            });
+              type: 'hashpack',
+              did,
+            } as any);
           } else {
+            console.error('❌ WalletConnect - No accounts returned from HashPack');
             onError('No accounts returned from HashPack');
           }
         } catch (e: any) {
-          console.error('Error handling pairing data:', e);
+          console.error('❌ WalletConnect - Error handling pairing data:', e);
           onError(e?.message || 'Failed to parse HashPack pairing data');
         } finally {
           setLoading(false);
@@ -114,7 +209,17 @@ export function WalletConnect({ onSuccess, onError }: WalletConnectProps) {
       }
 
       // Init and open pairing modal (v3)
-      await hashconnect.init();
+      try {
+        await hashconnect.init();
+      } catch (e: any) {
+        // Handle stale/invalid pairing state
+        console.warn('HashConnect.init error (possibly stale pairing):', e?.message || e);
+        try { (hashconnect as any).disconnect?.(); } catch {}
+        setLoading(false);
+        setStep('choice');
+        onError('Wallet pairing invalid. In HashPack, remove this site under DApp Connections, then reconnect.');
+        return;
+      }
       // After init, try to surface a pairing string ASAP as a fallback UI
       try {
         const ps = (hashconnect as any).pairingString ||
