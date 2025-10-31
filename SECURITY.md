@@ -51,14 +51,6 @@ When reporting a vulnerability, please provide:
 - Audit logging for all system activities
 - Session management and timeout policies
 
-## Bug Bounty Program
-
-We offer rewards for responsible disclosure of security vulnerabilities:
-
-- **Critical**: $1,000 - $5,000
-- **High**: $500 - $1,000
-- **Medium**: $100 - $500
-- **Low**: $50 - $100
 
 ### Eligibility
 - Must follow responsible disclosure guidelines
