@@ -183,11 +183,14 @@ export default function PrivacyEconomyDemoPage() {
             </TabsContent>
 
             <TabsContent value="fhir" className="mt-6">
-              <FHIRIntegration
-                patientDid={userDid}
-                patientPrivateKey={userPrivateKey}
-              />
-            </TabsContent>
+  {/* <FHIRIntegration
+    patientDid={userDid}
+    patientPrivateKey={userPrivateKey}
+  /> */}
+  <div className="text-gray-400 text-center p-6 border border-slate-700 rounded-lg">
+    FHIR Integration component coming soon.
+  </div>
+</TabsContent>
           </Tabs>
         </div>
 
