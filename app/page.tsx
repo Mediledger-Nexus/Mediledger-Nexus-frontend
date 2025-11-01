@@ -94,7 +94,7 @@ export default function HomePage() {
           </motion.p>
 
           <motion.div className="flex flex-col sm:flex-row gap-6 justify-center items-center" variants={fadeInUp}>
-            <Link href="/auth">
+            <Link href="/auth/signup">
               <Button
                 size="lg"
                 className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-8 py-4 text-lg font-semibold rounded-full shadow-2xl hover:shadow-purple-500/25 transition-all duration-300 transform hover:scale-105"

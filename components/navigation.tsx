@@ -67,9 +67,9 @@ export function Navigation() {
                 Sign In
               </Button>
             </Link>
-            <Link href="/signup">
+            <Link href="/auth">
               <Button className="bg-gradient-to-r from-purple-600 to-cyan-600 hover:from-purple-700 hover:to-cyan-700 text-white">
-                Get Started
+                Sign Up
               </Button>
             </Link>
           </div>
@@ -117,9 +117,9 @@ export function Navigation() {
                     Sign In
                   </Button>
                 </Link>
-                <Link href="/signup">
+                <Link href="/auth/signup">
                   <Button className="w-full bg-gradient-to-r from-purple-600 to-cyan-600 hover:from-purple-700 hover:to-cyan-700 text-white">
-                    Get Started
+                    Sign Up
                   </Button>
                 </Link>
               </div>
