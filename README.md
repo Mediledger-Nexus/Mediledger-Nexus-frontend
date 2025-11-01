@@ -13,7 +13,7 @@
 
 **AI-Powered • Blockchain-Secured • Patient-Controlled**
 
-[🚀 Live Demo](#) • [📖 Documentation](#) • [💬 Discord](https://discord.gg/mediledger-nexus)
+[🚀 Live Demo](#) • [📖 Documentation](#) • [Pitch Deck](https://drive.google.com/file/d/1OXt9_t0yJewR-J-FJUbz-yO9BbljQXJr/view?usp=drivesdk)
 
 </div>
 
