@@ -1,6 +1,8 @@
 // Hedera Hashgraph Integration Utilities
 // Mock implementation for hackathon demo
 
+import { Client, TopicCreateTransaction, TopicId } from '@hashgraph/sdk';
+
 export interface HederaTransaction {
   id: string
   type: 'PATIENT_UPDATE' | 'RECORD_ACCESS' | 'CONSENT_GRANT' | 'DATA_SHARE'
@@ -116,4 +118,48 @@ export const generateAITx = (symptoms: string) => ({
     nextSteps: ['Monitor fever']
   },
   symptoms // Store raw input
-}); 
+});
+
+/**
+ * Creates a new HCS topic on the Hedera network
+ * @param client - Initialized Hedera Client instance
+ * @param memo - Optional memo for the topic
+ * @returns The created topic ID as a string
+ */
+export async function createTopic(client: Client, memo: string = 'MediLedger Nexus Topic'): Promise<string> {
+  try {
+    console.log('Creating new HCS topic with memo:', memo);
+    
+    const transaction = new TopicCreateTransaction()
+      .setTopicMemo(memo);
+
+    const txResponse = await transaction.execute(client);
+    const receipt = await txResponse.getReceipt(client);
+    
+    if (!receipt.topicId) {
+      throw new Error('Failed to create topic: No topic ID in receipt');
+    }
+
+    const topicId = receipt.topicId.toString();
+    console.log('✅ Successfully created new HCS topic ID:', topicId);
+    return topicId;
+    
+  } catch (error) {
+    console.error('❌ Failed to create HCS topic:', error);
+    throw new Error(`Topic creation failed: ${error instanceof Error ? error.message : String(error)}`);
+  }
+}
+
+/**
+ * Validates if a string is a valid HCS topic ID
+ * @param topicId - The topic ID to validate
+ * @returns boolean indicating if the topic ID is valid
+ */
+export function isValidTopicId(topicId: string): boolean {
+  try {
+    TopicId.fromString(topicId);
+    return true;
+  } catch {
+    return false;
+  }
+} 

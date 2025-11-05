@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "test:hcs": "ts-node --compiler-options '{\"module\":\"commonjs\"}' scripts/test-hcs-logging.ts",
     "build": "next build",
     "dev": "next dev",
     "lint": "next lint",
