@@ -13,7 +13,7 @@
 
 **AI-Powered • Blockchain-Secured • Patient-Controlled**
 
-[🚀 Live Demo](#) • [📖 Documentation](#) • [Pitch Deck](https://drive.google.com/file/d/1OXt9_t0yJewR-J-FJUbz-yO9BbljQXJr/view?usp=drivesdk) [Hedera certificate] (https://drive.google.com/file/d/1Z13bwbb_YxaMogXYaTX6Oktci4w9RAVk/view?usp=drivesdk)
+[🚀 Live Demo](#) • [📖 Documentation](#) • [Pitch Deck](https://drive.google.com/file/d/1OXt9_t0yJewR-J-FJUbz-yO9BbljQXJr/view?usp=drivesdk) [Hedera certificate](https://drive.google.com/file/d/1Z13bwbb_YxaMogXYaTX6Oktci4w9RAVk/view?usp=drivesdk)
 
 </div>
 
