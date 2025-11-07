@@ -1,4 +1,4 @@
-# 🏥 MediLedger Nexus
+#  MediLedger Nexus
 
 <div align="center">
 
@@ -13,13 +13,13 @@
 
 **AI-Powered • Blockchain-Secured • Patient-Controlled**
 
-[🚀 Live Demo](#) • [📖 Documentation](#) • [Pitch Deck](https://drive.google.com/file/d/1OXt9_t0yJewR-J-FJUbz-yO9BbljQXJr/view?usp=drivesdk) [Hedera certificate](https://drive.google.com/file/d/1Z13bwbb_YxaMogXYaTX6Oktci4w9RAVk/view?usp=drivesdk)
+[Pitch Deck](https://drive.google.com/file/d/1OXt9_t0yJewR-J-FJUbz-yO9BbljQXJr/view?usp=drivesdk) [Hedera certificate](https://drive.google.com/file/d/1Z13bwbb_YxaMogXYaTX6Oktci4w9RAVk/view?usp=drivesdk)
 
 </div>
 
 ---
 
-## 🎯 **What is MediLedger Nexus?**
+##  **What is MediLedger Nexus?**
 
 MediLedger Nexus is a **cutting-edge decentralized healthcare platform** that empowers patients with complete control over their medical data while enabling seamless, secure collaboration between healthcare providers and AI systems.
 
@@ -113,7 +113,7 @@ graph TB
 
 ---
 
-## 🚀 **Quick Start & Deployment**
+##  **Quick Start & Deployment**
 
 ### **⚡ Deploy in 5 Minutes (Hackathon Ready)**
 
@@ -207,7 +207,7 @@ After deployment, you'll have:
 - ✅ **Verifiable Proof**: HashScan links showing real blockchain transactions
 - ✅ **Professional Documentation**: Complete setup and deployment guides
 
-**🚀 Deploy Now**: See [COMPLETE-DEPLOYMENT-GUIDE.md](COMPLETE-DEPLOYMENT-GUIDE.md)
+**Deploy Now**: See [COMPLETE-DEPLOYMENT-GUIDE.md](COMPLETE-DEPLOYMENT-GUIDE.md)
 
 ---
 
@@ -424,7 +424,7 @@ POST /api/consent/grant
 
 ---
 
-## 🚀 **Deployment Guide**
+##  **Deployment Guide**
 
 ### **Environment Setup**
 ```bash
@@ -890,7 +890,5 @@ This software is for research and educational purposes. Always consult licensed 
 <div align="center">
 
 **MediLedger Nexus** • Empowering patients, enabling providers, advancing healthcare
-
-[📖 Documentation](#) • [🚀 Demo](#) • [💬 Community](https://discord.gg/mediledger-nexus) • [🐦 Twitter](https://twitter.com/MediLedgerNexus)
 
 </div>
